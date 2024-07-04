@@ -7,6 +7,15 @@ namespace wfc
         public int Item { get; } = Item;
         public int[] Options { get; } = Options;
 
+        public Rule[] GetInverseRules()
+        {
+            Rule[] output = new Rule[Options.Length];
+            for (int i = 0; i < Options.Length; i++)
+            {
+                output[i] = new Rule(Options[i], [Item]);
+            }
+            return output;
+        }
         public override readonly string ToString()
         {
             string opt = "";
@@ -17,31 +26,29 @@ namespace wfc
             }
             return $"Rule {{ Item = {Item}, Options = {opt}}}";
         }
-        public Rule[] GetInverseRules()
-        {
-            Rule[] output = new Rule[Options.Length];
-            for (int i = 0; i < Options.Length; i++)
-            {
-                output[i] = new Rule(Options[i], [Item]);
-            }
-            return output;
-        }
     }
     public class Rulebook
     {
-        private readonly Rule[] rules;
+        private readonly Rule[] rulesForChildren;
+        private readonly Rule[] rulesForParents;
         private readonly WeightedRandomSelector wrs;
         public Rulebook(Rule[] rules)
         {
-            this.rules = rules;
+            rulesForChildren = rules;
+            rulesForParents = GetInverseRules(rules);
             wrs = new WeightedRandomSelector();
         }
-        public Rule GetRule(int parent)
+        public Rule GetRuleForChildren(int parent)
         {
-            return rules[parent];
+            return rulesForChildren[parent];
         }
-        public static Rule[] CreateInverseRules(Rule[] rules)
+        public Rule GetRuleForParents(int child)
         {
+            return rulesForParents[child];
+        }
+        public static Rule[] GetInverseRules(Rule[] rules)
+        {
+            // given an array of rules parent->children returns an array of rules children->parents
             HashSet<int>[] tempInverse = new HashSet<int>[rules.Length];
             for (int i = 0; i < rules.Length; i++)
             {

@@ -86,10 +86,15 @@
             //Graph result = null;
 
             List<HashSet<int>> originalOptionsForChildren = new();
+            List<HashSet<int>> originalOptionsForParents = new();
             // store options
             foreach (Node child in collapsingNode.Children)
             {
                 originalOptionsForChildren.Add(child.Options.Copy());
+            }
+            foreach (Node parent in collapsingNode.Parents)
+            {
+                originalOptionsForParents.Add(parent.Options.Copy());
             }
 
             while (opts.Count > 0) // && result is null)
@@ -102,13 +107,14 @@
 
                 graph.AssignValueToNode(collapsingNode, chosen);
 
-                Rule rule = rb.GetRule(chosen);
+                // update children
+                Rule ruleForChildren = rb.GetRuleForChildren(chosen);
                 foreach (Node child in collapsingNode.Children)
                 {
                     if (child.IsSet())
                     {
                         // chosen color does not satisfy current setting
-                        if (!rule.Options.Contains(child.AssignedValue))
+                        if (!ruleForChildren.Options.Contains(child.AssignedValue))
                         {
                             // continue while loop (with other options)
                             goto end_of_loop;
@@ -116,9 +122,33 @@
                         continue;
                     }
 
-                    child.Options.RemoveWhere(s => !rule.Options.Contains(s));
+                    child.Options.RemoveWhere(s => !ruleForChildren.Options.Contains(s));
 
                     if (child.Options.Count == 0)
+                    {
+                        // continue while loop (with other options)
+                        goto end_of_loop;
+                    }
+                }
+
+                // update parents
+                Rule ruleForParents = rb.GetRuleForParents(chosen);
+                foreach (Node parent in collapsingNode.Parents)
+                {
+                    if (parent.IsSet())
+                    {
+                        // chosen color does not satisfy current setting
+                        if (!ruleForParents.Options.Contains(parent.AssignedValue))
+                        {
+                            // continue while loop (with other options)
+                            goto end_of_loop;
+                        }
+                        continue;
+                    }
+
+                    parent.Options.RemoveWhere(s => !ruleForParents.Options.Contains(s));
+
+                    if (parent.Options.Count == 0)
                     {
                         // continue while loop (with other options)
                         goto end_of_loop;
@@ -141,6 +171,10 @@
                 for (int i = 0; i < collapsingNode.Children.Count; i++)
                 {
                     collapsingNode.Children[i].Options = originalOptionsForChildren[i].Copy();
+                }
+                for (int i = 0; i < collapsingNode.Parents.Count; i++)
+                {
+                    collapsingNode.Parents[i].Options = originalOptionsForChildren[i].Copy();
                 }
                 // resest assignment
                 graph.ResetValueAssignment(collapsingNode);
