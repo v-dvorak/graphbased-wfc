@@ -1,12 +1,5 @@
 ﻿namespace wfc
 {
-    public static class GraphExtensions
-    {
-        public static Graph Copy(this Graph graph)
-        {
-            return graph.Copy();
-        }
-    }
     public enum GraphDirectedness { Undirected, Directed };
     public class Graph
     {
@@ -24,7 +17,6 @@
         {
             totalAssigned = total;
         }
-
         public Graph Copy()
         {
             // initialize all nodes
@@ -165,25 +157,6 @@
         }
     }
 
-    public class ChangeLogger
-    {
-        public List<Node> assignedChanged { get; private set; }
-        public List<(Node, int)> optionsChanged { get; private set; }
-
-        public ChangeLogger()
-        {
-            assignedChanged = new();
-            optionsChanged = new();
-        }
-        public void LogValueAssignment(Node node)
-        {
-            assignedChanged.Add(node);
-        }
-        public void LogOptionRemoval(Node node, int optionRemoved)
-        {
-            optionsChanged.Add((node, optionRemoved));
-        }
-    }
     public class Node
     {
         public int Id { get; }
@@ -208,6 +181,53 @@
         {
             Options.Remove(val);
         }
+        public bool TryUpdateNodeNeighbors(Rule ruleForChildren, Rule ruleForParents)
+        {
+            foreach (Node child in Children)
+            {
+                if (child.IsSet())
+                {
+                    // chosen color does not satisfy current setting
+                    if (!ruleForChildren.Options.Contains(child.AssignedValue))
+                    {
+                        // continue while loop (with other options)
+                        return false;
+                    }
+                    continue;
+                }
+
+                child.Options.RemoveWhere(s => !ruleForChildren.Options.Contains(s));
+
+                if (child.Options.Count == 0)
+                {
+                    // continue while loop (with other options)
+                    return false;
+                }
+            }
+            foreach (Node parent in Parents)
+            {
+                if (parent.IsSet())
+                {
+                    // chosen color does not satisfy current setting
+                    if (!ruleForParents.Options.Contains(parent.AssignedValue))
+                    {
+                        // continue while loop (with other options)
+                        return false;
+                    }
+                    continue;
+                }
+
+                parent.Options.RemoveWhere(s => !ruleForParents.Options.Contains(s));
+
+                if (parent.Options.Count == 0)
+                {
+                    // continue while loop (with other options)
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public bool IsSet()
         {
             return isSet;

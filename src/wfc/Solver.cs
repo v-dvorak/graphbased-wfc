@@ -83,11 +83,9 @@
                 wghts.Add(globalWeights[k]);
             }
 
-            //Graph result = null;
-
+            // store options for possible reset
             List<HashSet<int>> originalOptionsForChildren = new();
             List<HashSet<int>> originalOptionsForParents = new();
-            // store options
             foreach (Node child in collapsingNode.Children)
             {
                 originalOptionsForChildren.Add(child.Options.Copy());
@@ -97,7 +95,8 @@
                 originalOptionsForParents.Add(parent.Options.Copy());
             }
 
-            while (opts.Count > 0) // && result is null)
+            // LOOK FOR SOLUTION
+            while (opts.Count > 0)
             {
                 // choose color and remove from options and weights
                 int chosenIndex = wrs.Choose(wghts);
@@ -107,66 +106,27 @@
 
                 graph.AssignValueToNode(collapsingNode, chosen);
 
-                // update children
+                // update children and parents
                 Rule ruleForChildren = rb.GetRuleForChildren(chosen);
-                foreach (Node child in collapsingNode.Children)
-                {
-                    if (child.IsSet())
-                    {
-                        // chosen color does not satisfy current setting
-                        if (!ruleForChildren.Options.Contains(child.AssignedValue))
-                        {
-                            // continue while loop (with other options)
-                            goto end_of_loop;
-                        }
-                        continue;
-                    }
-
-                    child.Options.RemoveWhere(s => !ruleForChildren.Options.Contains(s));
-
-                    if (child.Options.Count == 0)
-                    {
-                        // continue while loop (with other options)
-                        goto end_of_loop;
-                    }
-                }
-
-                // update parents
                 Rule ruleForParents = rb.GetRuleForParents(chosen);
-                foreach (Node parent in collapsingNode.Parents)
+                bool updateSuccess = collapsingNode.TryUpdateNodeNeighbors(ruleForChildren, ruleForParents);
+                                
+                if (updateSuccess)
                 {
-                    if (parent.IsSet())
+                    // all values set are correct, return graph if finished, or continue search
+                    if (graph.AllSet)
                     {
-                        // chosen color does not satisfy current setting
-                        if (!ruleForParents.Options.Contains(parent.AssignedValue))
-                        {
-                            // continue while loop (with other options)
-                            goto end_of_loop;
-                        }
-                        continue;
+                        return graph;
                     }
-
-                    parent.Options.RemoveWhere(s => !ruleForParents.Options.Contains(s));
-
-                    if (parent.Options.Count == 0)
+                    // recursion
+                    Graph? result = RecursiveSolve2(graph, depth + 1);
+                    if (result is not null)
                     {
-                        // continue while loop (with other options)
-                        goto end_of_loop;
+                        return result;
                     }
                 }
 
-                if (graph.AllSet)
-                {
-                    return graph;
-                }
-                // recursion
-                Graph? result = RecursiveSolve2(graph, depth + 1);
-                if (result is not null)
-                {
-                    return result;
-                }
-
-            end_of_loop: { }
+                // RESET
                 // reset options
                 for (int i = 0; i < collapsingNode.Children.Count; i++)
                 {
@@ -176,7 +136,7 @@
                 {
                     collapsingNode.Parents[i].Options = originalOptionsForChildren[i].Copy();
                 }
-                // resest assignment
+                // reset assignment
                 graph.ResetValueAssignment(collapsingNode);
             }
             return null;
