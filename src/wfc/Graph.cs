@@ -7,6 +7,7 @@
             return graph.Copy();
         }
     }
+    public enum GraphDirectedness { Undirected, Directed };
     public class Graph
     {
         public Node[] AllNodes;
@@ -114,20 +115,7 @@
                 childNode.AddParent(parentNode);
             }
         }
-        public void ResetFromLogger(ChangeLogger logger)
-        {
-            // reset options
-            foreach ((Node node, int option) in logger.optionsChanged)
-            {
-                node.Options.Add(option);
-            }
-            // reset values
-            foreach (Node node in logger.assignedChanged)
-            {
-                node.ResetValue();
-            }
-        }
-        public static List<(int, int)> ParseEdgesFromFile(string filePath)
+        public static List<(int, int)> ParseEdgesFromFile(string filePath, GraphDirectedness direct = GraphDirectedness.Directed)
         {
             List<(int, int)> edges = new List<(int, int)>();
 
@@ -141,7 +129,15 @@
                         string[] parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         if (parts.Length == 2)
                         {
-                            edges.Add((int.Parse(parts[0]), int.Parse(parts[1])));
+                            // parse
+                            int first = int.Parse(parts[0]);
+                            int second = int.Parse(parts[1]);
+                            // add
+                            edges.Add((first, second));
+                            if (direct == GraphDirectedness.Undirected)
+                            {
+                                edges.Add((second, second));
+                            }
                         }
                         else
                         {

@@ -72,7 +72,7 @@
             return best;
         }
 
-        public Graph? RecursiveSolve2(Graph graph, int depth)
+        private Graph? RecursiveSolve2(Graph graph, int depth)
         {
             Node collapsingNode = LowestEntropy(graph.AllNodes);
 
@@ -148,116 +148,17 @@
             return null;
         }
 
-        public Graph? RecursiveSolve(Graph graph, PriorityQueue.PrioritySet<Node, double> pq, int depth)
-        {
-            Console.WriteLine(pq.Count);
-            //Node first = pq.Dequeue();
-
-            Node first = LowestEntropy(graph.AllNodes);
-            List<int> opts = new();
-            List<int> wghs = new();
-
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine($"Processing node {first.Id}");
-            Console.WriteLine($"Depth {depth}");
-            Console.WriteLine(new String('-', 20));
-            Console.WriteLine(graph);
-            Console.WriteLine(new String('-', 20));
-            Console.WriteLine();
-
-            foreach (int k in first.Options)
-            {
-                opts.Add(k);
-            }
-
-            Graph? res = null;
-            //ChangeLogger logger = new();
-
-            while (opts.Count > 0 && res is null) // && pq.Count > 0)
-            {
-                wghs = new();
-
-                // get all weights
-                foreach (int k in first.Options)
-                {
-                    wghs.Add(globalWeights[k]);
-                }
-                // choose item
-                int chosenIndex = wrs.Choose(wghs);
-                int chosen = opts[chosenIndex];
-                opts.RemoveAt(chosenIndex);
-
-                // set item
-                graph.AssignValueToNode(first, chosen);
-                //logger.LogValueAssignment(first);
-
-                Console.WriteLine($"Assigning {chosen}");
-
-                // update children
-                Rule rule = rb.GetRule(chosen);
-                foreach (Node child in first.Children)
-                {
-                    Console.WriteLine($"-- Updating child {child.Id}");
-                    // set child
-                    if (child.IsSet() && !rule.Options.Contains(child.AssignedValue))
-                    {
-                        Console.WriteLine($"Child {child.Id} is set and assignment is not valid.");
-                        //graph.ResetFromLogger(logger);
-                        return null;
-                    }
-                    // still not set child, update options and update entropy
-                    if (!child.IsSet())
-                    {
-                        bool changed = false;
-                        foreach (int k in child.Options)
-                        {
-                            if (!rule.Options.Contains(k))
-                            {
-                                child.Options.Remove(k);
-                                //logger.LogOptionRemoval(child, k);
-                                changed = true;
-                            }
-                        }
-                        // update childs entropy
-                        if (changed)
-                        {
-                            Console.WriteLine($"Updated child options: {String.Join(" ", child.Options)}");
-                            double prior = Entropy.Shannon(globalWeights, child.Options);
-                            pq.TryUpdate(child, prior);
-                        }
-                        // no options for non set child
-                        if (child.Options.Count == 0)
-                        {
-                            Console.WriteLine($"Node {child.Id} is not set and count is 0, returning");
-                            //graph.ResetFromLogger(logger);
-                            return null;
-                        }
-                    }
-                }
-                // all nodes are set, solved
-                if (graph.AllSet)
-                {
-                    return graph;
-                }
-                // not finished, search deeper
-                else
-                {
-                    res = RecursiveSolve(graph.Copy(), pq, depth + 1);
-                }
-            }
-            return res;
-        }
         public Graph? Solve(Graph graph)
         {
-            PriorityQueue.PrioritySet<Node, double> pq = new();
-            foreach (Node n in graph.AllNodes)
-            {
-                double prior = Entropy.Shannon(globalWeights, n.Options);
-                pq.Enqueue(n, prior);
-            }
+            // preprocessing
+            //PriorityQueue.PrioritySet<Node, double> pq = new();
+            //foreach (Node n in graph.AllNodes)
+            //{
+            //    double prior = Entropy.Shannon(globalWeights, n.Options);
+            //    pq.Enqueue(n, prior);
+            //}
 
-            return RecursiveSolve(graph, pq, 0);
+            return RecursiveSolve2(graph, 0);
         }
     }
 }
