@@ -17,7 +17,7 @@
                 rls[i] = rules[i];
             }
             Rulebook rb = new Rulebook(rls);
-            foreach (Rule rule in rb.CreateInverseRules(rls))
+            foreach (Rule rule in Rulebook.CreateInverseRules(rls))
             {
                 Console.WriteLine(rule);
             }
