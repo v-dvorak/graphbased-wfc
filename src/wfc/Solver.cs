@@ -71,10 +71,12 @@
             }
             return best;
         }
-
-        private Graph? RecursiveSolve2(Graph graph, int depth)
+        private Graph? RecursiveSolve2(Graph graph, PriorityQueue.PrioritySet<Node, double> pq, int depth)
         {
-            Node collapsingNode = LowestEntropy(graph.AllNodes);
+            //Node collapsingNode = LowestEntropy(graph.AllNodes);
+            Node collapsingNode;
+            double collapsingNodePriority;
+            pq.TryDequeue(out collapsingNode, out collapsingNodePriority);
 
             List<int> opts = [.. collapsingNode.Options];
             List<int> wghts = new();
@@ -110,7 +112,7 @@
                 Rule ruleForChildren = rb.GetRuleForChildren(chosen);
                 Rule ruleForParents = rb.GetRuleForParents(chosen);
                 bool updateSuccess = collapsingNode.TryUpdateNodeNeighbors(ruleForChildren, ruleForParents);
-                                
+
                 if (updateSuccess)
                 {
                     // all values set are correct, return graph if finished, or continue search
@@ -119,7 +121,7 @@
                         return graph;
                     }
                     // recursion
-                    Graph? result = RecursiveSolve2(graph, depth + 1);
+                    Graph? result = RecursiveSolve2(graph, pq, depth + 1);
                     if (result is not null)
                     {
                         return result;
@@ -130,29 +132,42 @@
                 // reset options
                 for (int i = 0; i < collapsingNode.Children.Count; i++)
                 {
-                    collapsingNode.Children[i].Options = originalOptionsForChildren[i].Copy();
+                    Node child = collapsingNode.Children[i];
+                    child.Options = originalOptionsForChildren[i].Copy();
+                    if (!child.IsSet())
+                    {
+                        double prior = Entropy.Shannon(globalWeights, child.Options);
+                        pq.TryUpdate(child, prior);
+                    }
                 }
                 for (int i = 0; i < collapsingNode.Parents.Count; i++)
                 {
-                    collapsingNode.Parents[i].Options = originalOptionsForChildren[i].Copy();
+                    Node parent = collapsingNode.Parents[i];
+                    parent.Options = originalOptionsForParents[i].Copy();
+                    if (!parent.IsSet())
+                    {
+                        double prior = Entropy.Shannon(globalWeights, parent.Options);
+                        pq.TryUpdate(parent, prior);
+                    }
                 }
                 // reset assignment
                 graph.ResetValueAssignment(collapsingNode);
             }
+            pq.Enqueue(collapsingNode, collapsingNodePriority);
             return null;
         }
 
         public Graph? Solve(Graph graph)
         {
             // preprocessing
-            //PriorityQueue.PrioritySet<Node, double> pq = new();
-            //foreach (Node n in graph.AllNodes)
-            //{
-            //    double prior = Entropy.Shannon(globalWeights, n.Options);
-            //    pq.Enqueue(n, prior);
-            //}
+            PriorityQueue.PrioritySet<Node, double> pq = new();
+            foreach (Node n in graph.AllNodes)
+            {
+                double prior = Entropy.Shannon(globalWeights, n.Options);
+                pq.Enqueue(n, prior);
+            }
 
-            return RecursiveSolve2(graph, 0);
+            return RecursiveSolve2(graph, pq, 0);
         }
     }
 }
