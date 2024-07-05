@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Diagnostics;
-using System.Linq;
 
 namespace PriorityQueue
 {
@@ -191,7 +188,6 @@ namespace PriorityQueue
             RemoveIndex(index, out var _, out var _);
             return true;
         }
-
         public bool TryUpdate(TElement element, TPriority priority)
         {
             if (!_index.TryGetValue(element, out int index))
