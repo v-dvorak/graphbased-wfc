@@ -156,18 +156,74 @@
             pq.Enqueue(collapsingNode, collapsingNodePriority);
             return null;
         }
+        private PriorityQueue.PrioritySet<Node, double> SetUpPriorityQueue(Graph graph)
+        {
+            PriorityQueue.PrioritySet<Node, double> pq = new();
+            foreach (Node node in graph.AllNodes)
+            {
+                if (!node.IsSet())
+                {
+                    double prior = Entropy.Shannon(globalWeights, node.Options);
+                    pq.Enqueue(node, prior);
+                }
+            }
+            return pq;
+        }
 
         public Graph? Solve(Graph graph)
         {
-            // preprocessing
-            PriorityQueue.PrioritySet<Node, double> pq = new();
-            foreach (Node n in graph.AllNodes)
+            return RecursiveSolve2(graph, SetUpPriorityQueue(graph), 0);
+        }
+        public Graph? Solve(Graph graph, IEnumerable<(Node, int)> constraints)
+        {
+            foreach ((Node node, int value) in constraints)
             {
-                double prior = Entropy.Shannon(globalWeights, n.Options);
-                pq.Enqueue(n, prior);
+                try
+                {
+                    if (!TryForceValueToNodeWithUpdate(graph, node, value))
+                    {
+                        // something wrong with neighbor updates
+                        return null;
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    // user tried to assign value to an already set node
+                    return null;
+                }
             }
-
-            return RecursiveSolve2(graph, pq, 0);
+            return Solve(graph);
+        }
+        public Graph? Solve(Graph graph, IEnumerable<(int, int)> constraints)
+        {
+            // constraints format : (node id, value)
+            foreach ((int nodeId, int value) in constraints)
+            {
+                try
+                {
+                    if (!TryForceValueToNodeWithUpdate(graph, graph.AllNodes[nodeId], value))
+                    {
+                        // something wrong with neighbor updates
+                        return null;
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    // user tried to assign value to an already set node
+                    return null;
+                }
+            }
+            return Solve(graph);
+        }
+        public bool TryForceValueToNodeWithUpdate(Graph graph, Node node, int chosen)
+        {
+            // used to force certain value to a node before looking for solution
+            // assign value
+            graph.AssignValueToNode(node, chosen);
+            // update
+            Rule ruleForChildren = rb.GetRuleForChildren(chosen);
+            Rule ruleForParents = rb.GetRuleForParents(chosen);
+            return node.TryUpdateNodeNeighbors(ruleForChildren, ruleForParents);
         }
     }
 }
