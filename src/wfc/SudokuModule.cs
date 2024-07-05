@@ -1,4 +1,5 @@
 ﻿using Refit;
+using System.Globalization;
 
 namespace wfc
 {
@@ -124,6 +125,21 @@ namespace wfc
         {
             return (tuple.Item1 + add, tuple.Item2 + add);
         }
+        public static string GenerateTestCase(Sudoku sudoku, string testName)
+        {
+            string output = $"[TestMethod]\npublic void {testName}()\n{{\n// Arrange\nSudoku example = new Sudoku(new int[,]\n{{\n";
+            for (int i = 0; i < 9; i++)
+            {
+                output += "\t\t{ ";
+                for (int j = 0; j < 9; j++)
+                {
+                    output += $"{sudoku.Board[i,j]}, ";
+                }
+                output += "},\n";
+            }
+            output += "});\nSudokuSolver solver = new SudokuSolver();\n\n// Act\nSudoku result = solver.Solve(example);\n\n// Arrange\nAssert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result) && SudokuChecker.IsSudokuValid(result.Board));\n}";
+            return output;
+        }
         public static List<(int, int)> GetSetCells(Sudoku example)
         {
             List<(int, int)> output = new();
@@ -239,26 +255,23 @@ namespace wfc
         private ISudokuApi apiCaller;
         public SudokuGenerator()
         {
-            apiCaller = RestService.For<ISudokuApi>("https://sudoku-api.vercel.app/api");
+            apiCaller = RestService.For<ISudokuApi>("https://sugoku.onrender.com");
         }
-        public (Sudoku, Sudoku, string) GetNewBoard()
+        public (Sudoku, string) GetNewBoard(string difficulty = "hard")
         {
-            var item = apiCaller.GetSudokuBoard().Result;
-            return (
-                new Sudoku(item.newboard.grids[0].value),
-                new Sudoku(item.newboard.grids[0].solution),
-                item.newboard.grids[0].difficulty
-                );
+            var item = apiCaller.GetSudokuBoard(difficulty).Result;
+            return (new Sudoku(item.board), "hard");
         }
         #region helper_classes
         public interface ISudokuApi
         {
-            [Get("/dosuku")]
-            Task<SudokuBoard> GetSudokuBoard();
+            [Get("/board?difficulty={difficulty}")]
+            Task<SudokuBoard> GetSudokuBoard(string difficulty);
         }
         public class SudokuBoard
         {
-            public NewBoard newboard { get; set; }
+            //public NewBoard newboard { get; set; }
+            public int[][] board { get; set; }
         }
         public class NewBoard
         {

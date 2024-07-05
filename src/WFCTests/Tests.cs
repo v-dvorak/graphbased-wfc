@@ -148,7 +148,8 @@ namespace WFCTests
             // Arrange
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result));
         }
-        public void Sudoku_CorrectSolution()
+        [TestMethod]
+        public void Sudoku_CorrectSolution0()
         {
             // Arrange
             Sudoku example = new Sudoku(new int[,]
@@ -163,18 +164,29 @@ namespace WFCTests
                 { 6, 3, 0, 1, 9, 0, 4, 0, 2 },
                 { 0, 0, 5, 0, 0, 0, 8, 6, 0 }
             });
-            Sudoku expectedResult = new Sudoku(new int[,]
-            {
-                { 8, 4, 7, 2, 3, 1, 6, 9, 5 },
-                { 5, 1, 2, 6, 8, 9, 7, 3, 4 },
-                { 9, 6, 3, 5, 7, 4, 2, 1, 8 },
-                { 7, 8, 6, 3, 1, 2, 5, 4, 9 },
-                { 1, 5, 9, 4, 6, 8, 3, 2, 7 },
-                { 3, 2, 4, 9, 5, 7, 1, 8, 6 },
-                { 4, 7, 1, 8, 2, 6, 9, 5, 3 },
-                { 6, 3, 8, 1, 9, 5, 4, 7, 2 },
-                { 2, 9, 5, 7, 4, 3, 8, 6, 1 }
+            SudokuSolver solver = new SudokuSolver();
 
+            // Act
+            Sudoku result = solver.Solve(example);
+
+            // Arrange
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result) && SudokuChecker.IsSudokuValid(result.Board));
+        }
+        [TestMethod]
+        public void Sudoku_CoorectSolution1()
+        {
+            // Arrange
+            Sudoku example = new Sudoku(new int[,]
+            {
+                { 2, 0, 0, 0, 0, 0, 0, 4, 0, },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+                { 0, 0, 0, 4, 0, 5, 0, 9, 7, },
+                { 0, 5, 0, 8, 2, 0, 3, 0, 0, },
+                { 0, 0, 0, 1, 0, 7, 2, 0, 0, },
+                { 7, 0, 0, 6, 0, 0, 9, 0, 5, },
+                { 8, 0, 5, 9, 0, 0, 6, 0, 2, },
+                { 0, 6, 3, 0, 7, 0, 4, 0, 0, },
             });
             SudokuSolver solver = new SudokuSolver();
 
@@ -182,7 +194,224 @@ namespace WFCTests
             Sudoku result = solver.Solve(example);
 
             // Arrange
-            Assert.Equals(result, expectedResult);
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
+        [TestMethod]
+        public void Sudoku_CoorectSolution2()
+        {
+            // Arrange
+            Sudoku example = new Sudoku(new int[,]
+            {
+                { 0, 0, 0, 2, 3, 0, 0, 0, 7, },
+                { 0, 0, 0, 1, 0, 0, 6, 0, 0, },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+                { 1, 0, 3, 0, 4, 0, 0, 0, 0, },
+                { 0, 5, 0, 0, 9, 0, 0, 0, 0, },
+                { 0, 0, 0, 3, 7, 0, 5, 0, 4, },
+                { 0, 0, 0, 6, 8, 4, 0, 7, 0, },
+                { 0, 4, 5, 0, 1, 0, 0, 0, 0, },
+                { 8, 0, 0, 7, 0, 0, 3, 4, 1, },
+            });
+            SudokuSolver solver = new SudokuSolver();
+
+            // Act
+            Sudoku result = solver.Solve(example);
+
+            // Arrange
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result) && SudokuChecker.IsSudokuValid(result.Board));
+        }
+        [TestMethod]
+        public void Sudoku_CoorectSolution3()
+        {
+            // Arrange
+            Sudoku example = new Sudoku(new int[,]
+            {
+                { 0, 6, 0, 0, 8, 0, 0, 0, 5, },
+                { 0, 2, 5, 0, 4, 7, 0, 8, 0, },
+                { 7, 0, 0, 0, 5, 0, 0, 0, 0, },
+                { 0, 1, 0, 0, 0, 5, 0, 9, 0, },
+                { 4, 0, 0, 0, 0, 1, 0, 0, 6, },
+                { 0, 0, 8, 0, 0, 0, 4, 5, 0, },
+                { 5, 0, 0, 6, 0, 0, 0, 0, 0, },
+                { 0, 0, 0, 0, 0, 2, 5, 0, 0, },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+            });
+            SudokuSolver solver = new SudokuSolver();
+
+            // Act
+            Sudoku result = solver.Solve(example);
+
+            // Arrange
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result) && SudokuChecker.IsSudokuValid(result.Board));
+        }
+        [TestMethod]
+        public void Sudoku_CoorectSolution4()
+        {
+            // Arrange
+            Sudoku example = new Sudoku(new int[,]
+            {
+                { 0, 0, 7, 0, 0, 3, 0, 4, 6, },
+                { 0, 0, 0, 0, 5, 0, 0, 8, 0, },
+                { 0, 0, 0, 7, 0, 9, 0, 0, 0, },
+                { 0, 0, 0, 0, 0, 5, 0, 0, 7, },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+                { 7, 0, 8, 0, 0, 0, 3, 0, 0, },
+                { 5, 0, 1, 0, 0, 0, 0, 7, 0, },
+                { 6, 7, 0, 0, 3, 8, 0, 0, 0, },
+                { 0, 0, 0, 5, 7, 0, 6, 3, 0, },
+            });
+            SudokuSolver solver = new SudokuSolver();
+
+            // Act
+            Sudoku result = solver.Solve(example);
+
+            // Arrange
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result) && SudokuChecker.IsSudokuValid(result.Board));
+        }
+        [TestMethod]
+        public void Sudoku_CoorectSolution5()
+        {
+            // Arrange
+            Sudoku example = new Sudoku(new int[,]
+            {
+                { 7, 0, 0, 0, 0, 0, 0, 0, 1, },
+                { 0, 0, 4, 0, 5, 0, 7, 8, 0, },
+                { 0, 0, 9, 0, 4, 0, 2, 0, 0, },
+                { 2, 0, 0, 0, 0, 0, 8, 0, 0, },
+                { 4, 0, 0, 8, 0, 0, 3, 0, 0, },
+                { 0, 0, 0, 0, 2, 0, 1, 0, 0, },
+                { 0, 2, 0, 0, 1, 0, 0, 0, 0, },
+                { 0, 4, 0, 0, 0, 0, 5, 0, 0, },
+                { 0, 0, 1, 0, 3, 8, 0, 2, 0, },
+            });
+            SudokuSolver solver = new SudokuSolver();
+
+            // Act
+            Sudoku result = solver.Solve(example);
+
+            // Arrange
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result) && SudokuChecker.IsSudokuValid(result.Board));
+        }
+        [TestMethod]
+        public void Sudoku_CoorectSolution6()
+        {
+            // Arrange
+            Sudoku example = new Sudoku(new int[,]
+            {
+                { 0, 0, 0, 7, 0, 5, 0, 0, 2, },
+                { 0, 0, 3, 0, 0, 8, 0, 7, 0, },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+                { 2, 0, 5, 0, 0, 0, 0, 0, 0, },
+                { 0, 4, 6, 0, 0, 0, 0, 1, 5, },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+                { 4, 0, 0, 5, 0, 0, 0, 8, 0, },
+                { 6, 0, 1, 0, 8, 0, 0, 0, 0, },
+                { 8, 7, 9, 6, 2, 0, 0, 5, 0, },
+            });
+            SudokuSolver solver = new SudokuSolver();
+
+            // Act
+            Sudoku result = solver.Solve(example);
+
+            // Arrange
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result) && SudokuChecker.IsSudokuValid(result.Board));
+        }
+        [TestMethod]
+        public void Sudoku_CoorectSolution7()
+        {
+            // Arrange
+            Sudoku example = new Sudoku(new int[,]
+            {
+                { 0, 0, 2, 0, 0, 0, 0, 0, 7, },
+                { 0, 4, 0, 0, 0, 0, 0, 0, 0, },
+                { 0, 0, 0, 1, 0, 0, 0, 0, 5, },
+                { 0, 0, 0, 0, 0, 6, 0, 0, 0, },
+                { 0, 0, 0, 0, 0, 9, 6, 0, 0, },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+                { 0, 2, 0, 8, 0, 3, 9, 7, 6, },
+                { 0, 6, 4, 9, 2, 5, 0, 0, 0, },
+                { 0, 3, 0, 6, 7, 0, 5, 2, 0, },
+            });
+            SudokuSolver solver = new SudokuSolver();
+
+            // Act
+            Sudoku result = solver.Solve(example);
+
+            // Arrange
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result) && SudokuChecker.IsSudokuValid(result.Board));
+        }
+        [TestMethod]
+        public void Sudoku_CoorectSolution8()
+        {
+            // Arrange
+            Sudoku example = new Sudoku(new int[,]
+            {
+                { 8, 0, 0, 0, 0, 0, 0, 0, 0, },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+                { 4, 5, 0, 1, 8, 0, 0, 0, 0, },
+                { 2, 0, 4, 0, 3, 0, 0, 9, 0, },
+                { 0, 6, 5, 0, 0, 8, 1, 0, 0, },
+                { 0, 0, 0, 0, 0, 4, 0, 5, 0, },
+                { 0, 0, 8, 6, 0, 0, 9, 7, 2, },
+                { 6, 0, 0, 0, 7, 0, 0, 0, 5, },
+                { 0, 7, 0, 0, 0, 2, 0, 6, 0, },
+            });
+            SudokuSolver solver = new SudokuSolver();
+
+            // Act
+            Sudoku result = solver.Solve(example);
+
+            // Arrange
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result) && SudokuChecker.IsSudokuValid(result.Board));
+        }
+        [TestMethod]
+        public void Sudoku_CoorectSolution9()
+        {
+            // Arrange
+            Sudoku example = new Sudoku(new int[,]
+            {
+                { 3, 0, 0, 7, 0, 1, 0, 0, 6, },
+                { 0, 0, 0, 0, 0, 9, 0, 7, 0, },
+                { 0, 7, 0, 0, 5, 0, 1, 0, 0, },
+                { 2, 0, 3, 0, 0, 6, 7, 0, 0, },
+                { 0, 0, 0, 0, 0, 0, 2, 0, 0, },
+                { 8, 0, 0, 1, 0, 2, 0, 0, 0, },
+                { 5, 0, 1, 2, 0, 4, 0, 0, 7, },
+                { 0, 6, 0, 9, 0, 0, 0, 0, 0, },
+                { 0, 0, 0, 0, 0, 5, 3, 0, 0, },
+            });
+            SudokuSolver solver = new SudokuSolver();
+
+            // Act
+            Sudoku result = solver.Solve(example);
+
+            // Arrange
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result) && SudokuChecker.IsSudokuValid(result.Board));
+        }
+        [TestMethod]
+        public void Sudoku_CoorectSolution10()
+        {
+            // Arrange
+            Sudoku example = new Sudoku(new int[,]
+            {
+                { 0, 0, 0, 7, 0, 4, 2, 6, 0, },
+                { 0, 2, 0, 0, 0, 0, 0, 0, 0, },
+                { 0, 0, 0, 2, 0, 0, 0, 0, 4, },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+                { 0, 0, 6, 0, 0, 0, 0, 1, 0, },
+                { 0, 0, 0, 0, 2, 3, 0, 0, 0, },
+                { 0, 4, 0, 6, 0, 0, 9, 0, 8, },
+                { 6, 0, 2, 0, 0, 8, 5, 4, 1, },
+                { 9, 8, 1, 0, 4, 0, 0, 7, 3, },
+            });
+            SudokuSolver solver = new SudokuSolver();
+
+            // Act
+            Sudoku result = solver.Solve(example);
+
+            // Arrange
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result) && SudokuChecker.IsSudokuValid(result.Board));
+        }
+
     }
 }
