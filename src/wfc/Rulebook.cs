@@ -31,12 +31,10 @@ namespace wfc
     {
         private readonly Rule[] rulesForChildren;
         private readonly Rule[] rulesForParents;
-        private readonly WeightedRandomSelector wrs;
         public Rulebook(Rule[] rules)
         {
             rulesForChildren = rules;
             rulesForParents = GetInverseRules(rules);
-            wrs = new WeightedRandomSelector();
         }
         public Rule GetRuleForChildren(int parent)
         {
