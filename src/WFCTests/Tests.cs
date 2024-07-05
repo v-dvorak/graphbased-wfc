@@ -3,7 +3,7 @@ namespace WFCTests
 {
     [TestClass]
 
-    public class GraphColoring
+    public class GraphColoringTests
     {
         public bool GraphEquality(Graph graph, int[] coloring)
         {
@@ -119,6 +119,70 @@ namespace WFCTests
 
             // Assert
             Assert.IsTrue(result is null);
+        }
+    }
+    [TestClass]
+    public class SudokuTests
+    {
+        [TestMethod]
+        public void Sudoku_Hallucination()
+        {
+            // Arrange
+            Sudoku example = new Sudoku(new int[,]
+            {
+                { 0, 0, 0, 2, 0, 0, 0, 9, 0 },
+                { 0, 0, 0, 0, 0, 9, 7, 0, 4 },
+                { 9, 0, 0, 0, 7, 0, 2, 1, 8 },
+                { 7, 8, 0, 3, 0, 0, 5, 0, 0 },
+                { 0, 0, 9, 4, 6, 8, 3, 0, 7 },
+                { 0, 2, 0, 0, 0, 7, 1, 0, 0 },
+                { 0, 0, 0, 8, 2, 6, 9, 5, 0 },
+                { 6, 3, 0, 1, 9, 0, 4, 0, 2 },
+                { 0, 0, 5, 0, 0, 0, 8, 6, 0 }
+            });
+            SudokuSolver solver = new SudokuSolver();
+
+            // Act
+            Sudoku result = solver.Solve(example);
+
+            // Arrange
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(example, result));
+        }
+        public void Sudoku_CorrectSolution()
+        {
+            // Arrange
+            Sudoku example = new Sudoku(new int[,]
+            {
+                { 0, 0, 0, 2, 0, 0, 0, 9, 0 },
+                { 0, 0, 0, 0, 0, 9, 7, 0, 4 },
+                { 9, 0, 0, 0, 7, 0, 2, 1, 8 },
+                { 7, 8, 0, 3, 0, 0, 5, 0, 0 },
+                { 0, 0, 9, 4, 6, 8, 3, 0, 7 },
+                { 0, 2, 0, 0, 0, 7, 1, 0, 0 },
+                { 0, 0, 0, 8, 2, 6, 9, 5, 0 },
+                { 6, 3, 0, 1, 9, 0, 4, 0, 2 },
+                { 0, 0, 5, 0, 0, 0, 8, 6, 0 }
+            });
+            Sudoku expectedResult = new Sudoku(new int[,]
+            {
+                { 8, 4, 7, 2, 3, 1, 6, 9, 5 },
+                { 5, 1, 2, 6, 8, 9, 7, 3, 4 },
+                { 9, 6, 3, 5, 7, 4, 2, 1, 8 },
+                { 7, 8, 6, 3, 1, 2, 5, 4, 9 },
+                { 1, 5, 9, 4, 6, 8, 3, 2, 7 },
+                { 3, 2, 4, 9, 5, 7, 1, 8, 6 },
+                { 4, 7, 1, 8, 2, 6, 9, 5, 3 },
+                { 6, 3, 8, 1, 9, 5, 4, 7, 2 },
+                { 2, 9, 5, 7, 4, 3, 8, 6, 1 }
+
+            });
+            SudokuSolver solver = new SudokuSolver();
+
+            // Act
+            Sudoku result = solver.Solve(example);
+
+            // Arrange
+            Assert.Equals(result, expectedResult);
         }
     }
 }
