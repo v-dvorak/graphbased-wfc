@@ -44,6 +44,27 @@ namespace wfc
         {
             return rulesForParents[child];
         }
+        public static Rule[] GetColoringRules(int colorCount)
+        {
+            Rule[] output = new Rule[colorCount];
+            for (int i = 0; i < colorCount; i++)
+            {
+                int[] options = new int[colorCount - 1];
+                int j = 0;
+                int k = 0;
+                while (j < colorCount)
+                {
+                    if (j != i)
+                    {
+                        options[k] = j;
+                        k++;
+                    }
+                    j++;
+                }
+                output[i] = new Rule(i, options);
+            }
+            return output;
+        }
         public static Rule[] GetInverseRules(Rule[] rules)
         {
             // given an array of rules parent->children returns an array of rules children->parents
