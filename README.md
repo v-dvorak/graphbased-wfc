@@ -44,7 +44,7 @@ Priorita zpracování buněk se standardně odvíjí od jejich entropie. Uživat
 
 ## Co je to WFC?
 
-WFC se nejčastěi používá v herním průmyslu pro procedurální generování obsahu, jako jsou mapy, terény nebo levely ve hrách. Inspiraci si bere z kvantové mechaniky - pracuje se superpozicemi buněk a kolapsem vlnových funkcí.
+WFC se nejčastěji používá v herním průmyslu pro procedurální generování obsahu jako jsou mapy, terény nebo levely ve hrách. Inspiraci si bere z kvantové mechaniky - pracuje se superpozicemi buněk a kolapsem vlnových funkcí.
 
 WFC začíná s několika buňkami, kde každá buňka může být v libovolném z několika možných stavů. Algoritmus postupně vybírá buňky a omezuje jejich stavy na základě pravidel sousedství, dokud nezůstane pro každou buňku jediný možný stav.
 
@@ -73,7 +73,7 @@ Ve hře [Peglin](https://store.steampowered.com/app/1296610/Peglin/) má hráč 
 
 ![](docs/peglin_example.png)
 
-Dejme tomu, že cheme, aby hráč po každým bossovi (:skull:) měl možnost doplnit zásoby (:moneybag:). Určitě ale nechceme, aby si hráč doplnil zásoby před bossem - pravidlo není symetrické. vyjádříme ho jako :skull:`->`:moneybag:, typická WFC s tímto nepočítá, nemáme možnost zadávat nesymetrická pravidla. (Některé implementace WFC vykoukají pravidla z příkladového obrázku, taková pravidla jsou inherentně symetrická.)
+Dejme tomu, že cheme, aby hráč po každým bossovi ( :skull: ) měl možnost doplnit zásoby ( :moneybag: ). Určitě ale nechceme, aby si hráč doplnil zásoby před bossem - pravidlo není symetrické. vyjádříme ho jako :skull: `->` :moneybag:, typická WFC s tímto nepočítá, nemáme možnost zadávat nesymetrická pravidla. (Některé implementace WFC vykoukají pravidla z příkladového obrázku, taková pravidla jsou inherentně symetrická.)
 
 Složitejší konstrukce herních levelů mohou vypadat třeba takto:
 
@@ -83,7 +83,7 @@ Složitejší konstrukce herních levelů mohou vypadat třeba takto:
 
 Grafy samozřejmě mohou být výrazně složitější, třeba s cykly. Občas je potřeba vyjádřit závislosti mezi buňkami, které spolu v síti neousedí. GBWFC lze použít na řešení sudoku, kde jsou sice pravidla symetrická, ale ne všechny na sobě závislé buňky spolu sousedí.
 
-Políčko vlevo nahoře má jenom tři sousedy v síti, ovšem podle pravidel sudoku je závislé na levém sloupci, vrchím řádku a 3x3 čtverečku vlevo nahoře. To bychom jen sotva obsáhli ve čtvercové síti.
+Políčko má jenom čtyři sousedy v síti, ovšem podle pravidel sudoku je závislé na sloupci, řádku a 3x3 čtverečku. To bychom jen sotva obsáhli ve čtvercové síti.
 
 ![](docs/sudoku_neighbors.png)
 
