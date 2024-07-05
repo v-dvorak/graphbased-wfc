@@ -85,14 +85,11 @@
 
             // Create nodes and populate AllNodes array
             AllNodes = new Node[nodeIds.Count];
-            //Dictionary<int, Node> nodeMap = new Dictionary<int, Node>();
 
-            int index = 0;
             foreach (int nodeId in nodeIds)
             {
                 Node newNode = new Node(nodeId, TotalOptions);
                 AllNodes[nodeId] = newNode;
-                //nodeMap[nodeId] = newNode;
             }
 
             // Build relationships (edges) between nodes
