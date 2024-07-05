@@ -183,12 +183,14 @@
                     if (!TryForceValueToNodeWithUpdate(graph, node, value))
                     {
                         // something wrong with neighbor updates
+                        Console.WriteLine("Unfeasible constraints");
                         return null;
                     }
                 }
                 catch (ArgumentException)
                 {
                     // user tried to assign value to an already set node
+                    Console.WriteLine("Multiple assignments to one node");
                     return null;
                 }
             }
@@ -204,12 +206,14 @@
                     if (!TryForceValueToNodeWithUpdate(graph, graph.AllNodes[nodeId], value))
                     {
                         // something wrong with neighbor updates
+                        Console.WriteLine("Unfeasible constraints");
                         return null;
                     }
                 }
                 catch (ArgumentException)
                 {
                     // user tried to assign value to an already set node
+                    Console.WriteLine("Multiple assignments to one node");
                     return null;
                 }
             }
