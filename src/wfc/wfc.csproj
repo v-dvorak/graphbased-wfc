@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Refit" Version="7.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="graph.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
