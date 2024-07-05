@@ -52,6 +52,7 @@
 
         public void AssignValueToNode(Node node, int chosen)
         {
+            // assigns value to node, has no side effects
             node.AssignValue(chosen);
             totalAssigned += 1;
         }
@@ -71,7 +72,7 @@
             totalAssigned = 0;
         }
 
-        public Graph(List<(int, int)> edges, int options)
+        public Graph(List<(int, int)> edges, int options, GraphDirectedness direct = GraphDirectedness.Directed)
         {
             TotalOptions = options;
             // Determine unique node IDs from edges
@@ -84,14 +85,14 @@
 
             // Create nodes and populate AllNodes array
             AllNodes = new Node[nodeIds.Count];
-            Dictionary<int, Node> nodeMap = new Dictionary<int, Node>();
+            //Dictionary<int, Node> nodeMap = new Dictionary<int, Node>();
 
             int index = 0;
             foreach (int nodeId in nodeIds)
             {
                 Node newNode = new Node(nodeId, TotalOptions);
-                AllNodes[index++] = newNode;
-                nodeMap[nodeId] = newNode;
+                AllNodes[nodeId] = newNode;
+                //nodeMap[nodeId] = newNode;
             }
 
             // Build relationships (edges) between nodes
@@ -100,11 +101,16 @@
                 int parentId = edge.Item1;
                 int childId = edge.Item2;
 
-                Node parentNode = nodeMap[parentId];
-                Node childNode = nodeMap[childId];
+                Node parentNode = AllNodes[parentId];
+                Node childNode = AllNodes[childId];
 
                 parentNode.AddChild(childNode);
                 childNode.AddParent(parentNode);
+                if (direct == GraphDirectedness.Undirected)
+                {
+                    parentNode.AddParent(childNode);
+                    childNode.AddChild(parentNode);
+                }
             }
         }
         public static List<(int, int)> ParseEdgesFromFile(string filePath, GraphDirectedness direct = GraphDirectedness.Directed)
@@ -191,6 +197,9 @@
                     if (!ruleForChildren.Options.Contains(child.AssignedValue))
                     {
                         // continue while loop (with other options)
+                        //Console.WriteLine("Child is not consistent");
+                        //Console.WriteLine($"Child {child.Id}, Parent {Id}");
+                        //Console.WriteLine($"Child options {child.AssignedValue}, Parent value {AssignedValue}");
                         return false;
                     }
                     continue;
@@ -201,6 +210,8 @@
                 if (child.Options.Count == 0)
                 {
                     // continue while loop (with other options)
+                    //Console.WriteLine("Child cant be filled anymore");
+                    //Console.WriteLine($"Child {child.Id}, Parent {Id}");
                     return false;
                 }
             }
@@ -212,6 +223,9 @@
                     if (!ruleForParents.Options.Contains(parent.AssignedValue))
                     {
                         // continue while loop (with other options)
+                        //Console.WriteLine("Parent is not consistent");
+                        //Console.WriteLine($"Parent {parent.Id}, child {Id}");
+                        //Console.WriteLine($"Parent options {parent.AssignedValue}, Child value {AssignedValue}");
                         return false;
                     }
                     continue;
@@ -221,7 +235,9 @@
 
                 if (parent.Options.Count == 0)
                 {
-                    // continue while loop (with other options)
+                    //// continue while loop (with other options)
+                    //Console.WriteLine("Parent cant be filled anymore");
+                    //Console.WriteLine($"Parent {parent.Id}, Child {Id}");
                     return false;
                 }
             }
@@ -234,7 +250,7 @@
         }
         public void AssignValue(int value)
         {
-            if (IsSet()) throw new Exception("Can't set value, value is already set.");
+            if (IsSet()) throw new ArgumentException("Can't set value, value is already set.", "value");
 
             AssignedValue = value;
             isSet = true;
