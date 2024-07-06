@@ -37,6 +37,10 @@
         }
         public int Choose(List<int> globalWeights)
         {
+            //if (globalWeights.Count == 1)
+            //{
+            //    return 0;
+            //}
             // Calculate the cumulative weights
             float[] cumulativeWeights = new float[globalWeights.Count];
             cumulativeWeights[0] = globalWeights[0];
@@ -52,7 +56,7 @@
             // Find the index corresponding to the random value
             for (int i = 0; i < cumulativeWeights.Length; i++)
             {
-                if (randomValue < cumulativeWeights[i])
+                if (randomValue <= cumulativeWeights[i])
                 {
                     return i;
                 }
