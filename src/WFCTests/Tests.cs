@@ -1,4 +1,5 @@
 using wfc;
+using wfc.Examples;
 namespace WFCTests
 {
     [TestClass]

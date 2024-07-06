@@ -1,7 +1,7 @@
 ﻿using Refit;
 using System.Globalization;
 
-namespace wfc
+namespace wfc.Examples
 {
     public class SudokuChecker
     {
@@ -133,7 +133,7 @@ namespace wfc
                 output += "\t\t{ ";
                 for (int j = 0; j < 9; j++)
                 {
-                    output += $"{sudoku.Board[i,j]}, ";
+                    output += $"{sudoku.Board[i, j]}, ";
                 }
                 output += "},\n";
             }
@@ -272,16 +272,6 @@ namespace wfc
         {
             //public NewBoard newboard { get; set; }
             public int[][] board { get; set; }
-        }
-        public class NewBoard
-        {
-            public Grid[] grids { get; set; }
-        }
-        public class Grid
-        {
-            public int[][] value { get; set; }
-            public int[][] solution { get; set; }
-            public string difficulty { get; set; }
         }
         #endregion
     }
