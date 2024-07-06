@@ -65,6 +65,19 @@
             node.ResetValue();
             totalAssigned -= 1;
         }
+        public void Reset()
+        {
+            HashSet<int> options = new HashSet<int>(TotalOptions);
+            for (int i = 0; i < TotalOptions; i++)
+            {
+                options.Add(i);
+            }
+            foreach (Node node in AllNodes)
+            {
+                node.ResetValue();
+                node.Options = options.Copy();
+            }
+        }
         public Graph(Node[] nodes, int totalOptions)
         {
             AllNodes = nodes;
@@ -110,7 +123,7 @@
                 }
             }
         }
-        public static List<(int, int)> ParseEdgesFromFile(string filePath, GraphDirectedness direct = GraphDirectedness.Directed)
+        public static List<(int, int)> ParseEdgesFromFile(string filePath)
         {
             List<(int, int)> edges = new List<(int, int)>();
 
@@ -129,10 +142,6 @@
                             int second = int.Parse(parts[1]);
                             // add
                             edges.Add((first, second));
-                            if (direct == GraphDirectedness.Undirected)
-                            {
-                                edges.Add((second, second));
-                            }
                         }
                         else
                         {
