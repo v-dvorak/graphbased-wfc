@@ -21,6 +21,7 @@
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
     <PackageReference Include="QuickGraph" Version="3.6.61119.7" />
     <PackageReference Include="Refit" Version="7.1.2" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
   </ItemGroup>
 
   <ItemGroup>

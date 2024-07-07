@@ -2,7 +2,7 @@
 
 namespace wfc.Examples
 {
-    public class SudokuChecker
+    public static class SudokuChecker
     {
         public static bool DoesNotHallucinate(Sudoku example, Sudoku solution)
         {
