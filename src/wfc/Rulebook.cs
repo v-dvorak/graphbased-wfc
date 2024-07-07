@@ -36,6 +36,10 @@ namespace wfc
             rulesForChildren = rules;
             rulesForParents = GetInverseRules(rules);
         }
+        public int GetRuleCount()
+        {
+            return rulesForChildren.Length;
+        }
         public Rule GetRuleForChildren(int parent)
         {
             return rulesForChildren[parent];
@@ -63,6 +67,25 @@ namespace wfc
                 }
                 output[i] = new Rule(i, options);
             }
+            return output;
+        }
+        public static Rule[] GetCascadeRules(int colorCount, bool overlap = false)
+        {
+            if (colorCount == 1)
+            {
+                return [new Rule(0, [0])];
+            }
+            else if (colorCount == 2)
+            {
+                return [new Rule(0, [0, 1]), new Rule(1, [0, 1])];
+            }
+            Rule[] output = new Rule[colorCount];
+            output[0] = new Rule(0, [0, 1]);
+            for (int i = 1; i < colorCount - 1; i++)
+            {
+                output[i] = new Rule(i, [i - 1, i, i + 1]);
+            }
+            output[colorCount - 1] = new Rule(colorCount - 1, [colorCount - 2, colorCount - 1]);
             return output;
         }
         public static Rule[] GetInverseRules(Rule[] rules)
