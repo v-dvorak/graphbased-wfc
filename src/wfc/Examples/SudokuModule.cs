@@ -1,5 +1,4 @@
 ﻿using Refit;
-using System.Globalization;
 
 namespace wfc.Examples
 {
@@ -94,7 +93,7 @@ namespace wfc.Examples
             return true;
         }
     }
-    public class SudokuSolver
+    public class SudokuSolver : ISolver<Sudoku>
     {
         private readonly Solver solver;
         public SudokuSolver()

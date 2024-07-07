@@ -1,15 +1,15 @@
 ﻿namespace wfc
 {
-    public class Solver
+    public class Solver : ISolver<Graph>
     {
         private readonly WeightedRandomSelector wrs;
-        private readonly Rulebook rb;
+        public Rulebook SolverRulebook { get; private set; }
         private readonly int[] globalWeights;
         public Solver(int[] globalWeights, Rulebook rulebook)
         {
             wrs = new WeightedRandomSelector();
             this.globalWeights = globalWeights;
-            rb = rulebook;
+            SolverRulebook = rulebook;
         }
 
         /*
@@ -109,8 +109,8 @@
                 graph.AssignValueToNode(collapsingNode, chosen);
 
                 // update children and parents
-                Rule ruleForChildren = rb.GetRuleForChildren(chosen);
-                Rule ruleForParents = rb.GetRuleForParents(chosen);
+                Rule ruleForChildren = SolverRulebook.GetRuleForChildren(chosen);
+                Rule ruleForParents = SolverRulebook.GetRuleForParents(chosen);
                 bool updateSuccess = collapsingNode.TryUpdateNodeNeighbors(ruleForChildren, ruleForParents);
 
                 if (updateSuccess)
@@ -225,8 +225,8 @@
             // assign value
             graph.AssignValueToNode(node, chosen);
             // update
-            Rule ruleForChildren = rb.GetRuleForChildren(chosen);
-            Rule ruleForParents = rb.GetRuleForParents(chosen);
+            Rule ruleForChildren = SolverRulebook.GetRuleForChildren(chosen);
+            Rule ruleForParents = SolverRulebook.GetRuleForParents(chosen);
             return node.TryUpdateNodeNeighbors(ruleForChildren, ruleForParents);
         }
     }
