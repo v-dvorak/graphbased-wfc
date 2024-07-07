@@ -43,7 +43,7 @@ Planar graphs have one special property - they can be colored with only 4 colors
 ```
 Using method provided in the `GraphModule` we can get something like this:
 
-<!-- ![](docs/showcase/graph_coloring.jpg) -->
+![](docs/showcase/graph_coloring.jpg)
 
 Throughout this whole project I'm using GraphViz and the DOT format to generate images.
 
