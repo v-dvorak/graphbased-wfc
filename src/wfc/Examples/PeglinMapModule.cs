@@ -2,6 +2,22 @@
 {
     public static class PeglinMapModule
     {
+        /// <summary>
+        /// Converts Map to <c>Graph</c>.
+        /// </summary>
+        /// <param name="map">List of map levels.</param>
+        /// <param name="totalOptions">Number of cell types.</param>
+        /// <returns></returns>
+        public static Graph MapToGraph(IReadOnlyList<int[]> map, int totalOptions)
+        {
+            return new Graph(GetEdges(map), totalOptions);
+        }
+        /// <summary>
+        /// Given height and width generates Peglin Map.
+        /// </summary>
+        /// <param name="maxWidth">There will no more than <c>maxWidth</c> cells on one level.</param>
+        /// <param name="height">Height of maps middle part.</param>
+        /// <returns></returns>
         public static List<int[]> GenerateMap(int maxWidth, int height)
         {
             List<int[]> map = new();
@@ -49,6 +65,11 @@
             }
             return map;
         }
+        /// <summary>
+        /// Returns list of edges/relations between cells inside a Peglin Map.
+        /// </summary>
+        /// <param name="map">Peglin Map representation.</param>
+        /// <returns>List of edges.</returns>
         public static List<(int, int)> GetEdges(IReadOnlyList<int[]> map)
         {
             List<(int, int)> edges = new();

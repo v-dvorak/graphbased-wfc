@@ -1,5 +1,17 @@
 ﻿namespace wfc
 {
+    public static class EnumExtensions
+    {
+        public static void Print<T>(this IEnumerable<T> list)
+        {
+            foreach (T elem in list)
+            {
+                Console.Write(elem);
+                Console.Write(" ");
+            }
+            Console.WriteLine();
+        }
+    }
     public static class GraphExtensions
     {
         public static Graph Copy(this Graph graph)

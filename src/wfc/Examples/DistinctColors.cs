@@ -4,24 +4,30 @@ namespace Colors
 {
     public static class DistinctColors
     {
+        /// <summary>
+        /// Given a color in HTML hex format returns black or white - the more contrasting one.  
+        /// </summary>
+        /// <param name="color">Color in HTML hex format, a string.</param>
+        /// <returns></returns>
         public static string GetFontColor(string color)
         {
             return ColorTranslator.ToHtml(ContrastColor(ColorTranslator.FromHtml(color)));
         }
-        public static Color ContrastColor(Color color)
+        private static Color ContrastColor(Color color)
         {
             // source: https://stackoverflow.com/questions/1855884/determine-font-color-based-on-background-color
-            int d = 0;
+            // slighlty edited
 
             // Counting the perceptive luminance - human eye favors green color...      
             double luminance = (0.299 * color.R + 0.587 * color.G + 0.114 * color.B) / 255;
 
+            // bright colors - black font
             if (luminance > 0.5)
-                d = 0; // bright colors - black font
-            else
-                d = 255; // dark colors - white font
-
-            return Color.FromArgb(d, d, d);
+            {
+                return Color.Black;
+            }
+            // dark colors - white font
+            return Color.White;
         }
         // source: https://stackoverflow.com/questions/309149/generate-distinctly-different-rgb-colors-in-graphs
         public static readonly string[] Colors = [

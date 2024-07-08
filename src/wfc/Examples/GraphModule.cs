@@ -7,13 +7,34 @@ namespace wfc.Examples
 {
     class GraphModule
     {
-        public static DotGraph ConvertGraphToDotGraph(Graph graph,
+        /// <summary>
+        /// Takes a graph in <c>Graph</c> format and turns int into a <c>DotGraph</c>.
+        /// </summary>
+        /// <param name="graph"></param>
+        /// <param name="graphIdentifier">Graph name under which it will stored in the DOT format.</param>
+        /// <param name="colors">List of colors that will to applied to nodes.</param>
+        /// <param name="graphConfig">Action that will be applied to graph.</param>
+        /// <param name="nodeConfig">Action that will be applied to every node.</param>
+        /// <param name="edgeConfig">Action that will be applied to every edge.</param>
+        /// <param name="removeDuplicates">Undirected <c>Graph</c> is represented as directed with two directed edges between nodes,
+        /// this leads to doubling of edges in generated graph.</param>
+        /// <returns><c>DotGraph</c>.</returns>
+        public static DotGraph ConvertGraphToDotGraph(
+            Graph graph,
+            string graphIdentifier = "Graph",
             string[]? colors = null,
+            Action<DotGraph>? graphConfig = null,
             Action<DotNode>? nodeConfig = null,
-            Action<DotEdge>? edgeConfig = null, bool removeDuplicates = true)
+            Action<DotEdge>? edgeConfig = null,
+            bool removeDuplicates = true
+            )
         {
             HashSet<(int, int)> assignedNodes = new();
-            DotGraph dotGraph = new DotGraph().WithIdentifier("Grafus");
+            // create graph
+            DotGraph dotGraph = new DotGraph().WithIdentifier(graphIdentifier);
+            graphConfig?.Invoke(dotGraph);
+
+            // create nodes
             foreach (Node node in graph.AllNodes)
             {
                 var dotNode = new DotNode();
@@ -26,6 +47,7 @@ namespace wfc.Examples
                 }
                 dotGraph.Add(dotNode);
             }
+            // create edges
             foreach (Node node in graph.AllNodes)
             {
                 foreach (Node child in node.Children)
@@ -37,7 +59,7 @@ namespace wfc.Examples
                         var edge = new DotEdge();
                         edgeConfig?.Invoke(edge);
                         edge.From(node.Id.ToString()).To(child.Id.ToString());
-                        Console.WriteLine($"{node.Id} -> {child.Id}");
+                        //Console.WriteLine($"{node.Id} -> {child.Id}");
                         dotGraph.Add(edge);
                         assignedNodes.Add((node.Id, child.Id));
                     }
@@ -45,12 +67,20 @@ namespace wfc.Examples
             }
             return dotGraph;
         }
-        public static void Run(Graph graph)
+        public enum GraphVizEngine { dot, neato, fdp, sfdp, circo, twopi, osage, }
+        /// <summary>
+        /// Basic method that takes in <c>Graph</c> and renders is into an image using the GraphViz library, runs GraphViz using command line.
+        /// </summary>
+        /// <param name="graph"></param>
+        public static void CreateImage(
+            Graph graph,
+            string outputImagePath,
+            string graphVizLibraryPath,
+            GraphVizEngine engine = GraphVizEngine.dot
+            )
         {
-            var dotGraph = ConvertGraphToDotGraph(graph, Colors.DistinctColors.Colors, node => node
+            var dotGraph = ConvertGraphToDotGraph(graph, colors: Colors.DistinctColors.Colors, nodeConfig: node => node
                 .WithShape(DotNodeShape.Circle)
-                .WithFillColor(DotColor.Pink)
-                .WithFontColor(DotColor.Blue)
                 .WithStyle(DotNodeStyle.Bold)
                 .WithStyle(DotNodeStyle.Filled)
                 .WithWidth(0.5)
@@ -69,13 +99,25 @@ namespace wfc.Examples
             // Save it to a file
             File.WriteAllText("graph.dot", result);
 
-            GenerateImageFromDot("graph.dot", "graph.png");
+            GenerateImageFromDot("graph.dot", outputImagePath, graphVizLibraryPath, engine);
         }
-
-        static void GenerateImageFromDot(string dotFilePath, string outputImagePath)
+        /// <summary>
+        /// Runs chosen GraphViz engine from command line with given arguments.
+        /// </summary>
+        /// <param name="dotFilePath"></param>
+        /// <param name="outputImagePath"></param>
+        /// <param name="graphVizLibraryPath"></param>
+        /// <param name="engine"></param>
+        static void GenerateImageFromDot(
+            string dotFilePath,
+            string outputImagePath,
+            string graphVizLibraryPath,
+            GraphVizEngine engine = GraphVizEngine.dot
+            )
         {
+            string engineName = Enum.GetName(typeof(GraphVizEngine), engine);
             Console.WriteLine($"Saving to {outputImagePath}");
-            var command = $"F:\\graphviz\\bin\\fdp.exe -Tpng \"{dotFilePath}\" -o \"{outputImagePath}\"";
+            var command = $"{graphVizLibraryPath}\\{engineName}dot.exe -Tpng \"{dotFilePath}\" -o \"{outputImagePath}\"";
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
                 FileName = "cmd.exe",

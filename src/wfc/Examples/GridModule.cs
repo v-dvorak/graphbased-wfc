@@ -28,6 +28,13 @@ namespace wfc.Examples
     }
     public static class GridModule
     {
+        /// <summary>
+        /// Returns list of edges/relations between cells inside a 2D grid.
+        /// </summary>
+        /// <param name="height">Grid height.</param>
+        /// <param name="width">Grid width.</param>
+        /// <param name="overlap">True if relations should overlap, first cell in row is a neighbor with the last cell in the same row.</param>
+        /// <returns>List of edges.</returns>
         public static List<(int, int)> GetGridEdges(int height, int width, bool overlap = false)
         {
             List<(int, int)> output = new();
@@ -55,23 +62,51 @@ namespace wfc.Examples
             }
             return output;
         }
-        public static int[,] GraphToGrid(Graph graph, int[,] input)
-        {
-            int height = input.GetLength(0);
-            int width = input.GetLength(1);
-            for (int i = 0; i < width; i++)
-            {
-                for (int j = 0; j < height; j++)
-                {
-                    input[i, j] = graph.AllNodes[i * width + j].AssignedValue;
-                }
-            }
-            return input;
-        }
+        /// <summary>
+        /// Returns list of edges/relations between cells inside a 2D grid.
+        /// </summary>
+        /// <param name="overlap">True if relations should overlap, first cell in row is a neighbor with the last cell in the same row.</param>
+        /// <returns>List of edges.</returns>
         public static List<(int, int)> GetGridEdges(int[,] grid, bool overlap = false)
         {
             return GetGridEdges(grid.GetLength(0), grid.GetLength(1), overlap: overlap);
         }
+        /// <summary>
+        /// Assigns values from <c>Graph</c> back to a grid.
+        /// </summary>
+        /// <param name="graph">Solved <c>Graph</c>.</param>
+        /// <param name="input">Grid to output to, used to get grid dimensions.</param>
+        /// <returns></returns>
+        public static int[,] GraphToGrid(Graph graph, int[,] input)
+        {
+            return GraphToGrid(graph, input.GetLength(0), input.GetLength(1));
+        }
+        /// <summary>
+        /// Assigns values from <c>Graph</c> back to a grid.
+        /// </summary>
+        /// <param name="graph">Solved <c>Graph</c>.</param>
+        /// <param name="height">Output grid height.</param>
+        /// <param name="width">Output grid width.</param>
+        /// <returns></returns>
+        public static int[,] GraphToGrid(Graph graph, int height, int width)
+        {
+            int[,] output = new int[height, width];
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    output[i, j] = graph.AllNodes[i * width + j].AssignedValue;
+                }
+            }
+            return output;
+        }
+        /// <summary>
+        /// Generates bitmap from given grid with given color palette.
+        /// </summary>
+        /// <param name="grid">Input grid, based on this the colors are chosen.</param>
+        /// <param name="colors">List of colors, are used to fill the grid.</param>
+        /// <param name="squareSize">Size of one square in pixels.</param>
+        /// <returns></returns>
         public static Bitmap GenerateImage(int[,] grid, IReadOnlyList<string> colors, int squareSize = 50)
         {
             int height = grid.GetLength(0);
