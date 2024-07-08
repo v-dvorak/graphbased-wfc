@@ -149,7 +149,7 @@ namespace WFCTests
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result));
         }
         [TestMethod]
-        public void Sudoku_CorrectSolution0()
+        public void Sudoku_CorrectSolution_0()
         {
             // Arrange
             Sudoku problem = new Sudoku(new int[,]
@@ -173,7 +173,7 @@ namespace WFCTests
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
         [TestMethod]
-        public void Sudoku_CoorectSolution1()
+        public void Sudoku_CorrectSolution_1()
         {
             // Arrange
             Sudoku problem = new Sudoku(new int[,]
@@ -197,7 +197,7 @@ namespace WFCTests
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
         [TestMethod]
-        public void Sudoku_CoorectSolution2()
+        public void Sudoku_CorrectSolution_2()
         {
             // Arrange
             Sudoku problem = new Sudoku(new int[,]
@@ -221,7 +221,7 @@ namespace WFCTests
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
         [TestMethod]
-        public void Sudoku_CoorectSolution3()
+        public void Sudoku_CorrectSolution_3()
         {
             // Arrange
             Sudoku problem = new Sudoku(new int[,]
@@ -245,7 +245,7 @@ namespace WFCTests
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
         [TestMethod]
-        public void Sudoku_CoorectSolution4()
+        public void Sudoku_CorrectSolution_4()
         {
             // Arrange
             Sudoku problem = new Sudoku(new int[,]
@@ -269,7 +269,7 @@ namespace WFCTests
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
         [TestMethod]
-        public void Sudoku_CoorectSolution5()
+        public void Sudoku_CorrectSolution_5()
         {
             // Arrange
             Sudoku problem = new Sudoku(new int[,]
@@ -293,7 +293,7 @@ namespace WFCTests
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
         [TestMethod]
-        public void Sudoku_CoorectSolution6()
+        public void Sudoku_CorrectSolution_6()
         {
             // Arrange
             Sudoku problem = new Sudoku(new int[,]
@@ -317,7 +317,7 @@ namespace WFCTests
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
         [TestMethod]
-        public void Sudoku_CoorectSolution7()
+        public void Sudoku_CorrectSolution_7()
         {
             // Arrange
             Sudoku problem = new Sudoku(new int[,]
@@ -341,7 +341,7 @@ namespace WFCTests
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
         [TestMethod]
-        public void Sudoku_CoorectSolution8()
+        public void Sudoku_CorrectSolution_8()
         {
             // Arrange
             Sudoku problem = new Sudoku(new int[,]
@@ -365,7 +365,7 @@ namespace WFCTests
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
         [TestMethod]
-        public void Sudoku_CoorectSolution9()
+        public void Sudoku_CorrectSolution_9()
         {
             // Arrange
             Sudoku problem = new Sudoku(new int[,]
@@ -389,7 +389,7 @@ namespace WFCTests
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
         [TestMethod]
-        public void Sudoku_CoorectSolution10()
+        public void Sudoku_CorrectSolution_10()
         {
             // Arrange
             Sudoku problem = new Sudoku(new int[,]
