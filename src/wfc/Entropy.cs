@@ -14,7 +14,7 @@
             }
             return -entropy;
         }
-        public static double Shannon(int[] globalWeights, HashSet<int> constraints)
+        public static double Shannon(HashSet<int> constraints, int[] globalWeights)
         {
             List<double> rel = ConvertWeights(globalWeights, constraints);
             double entropy = Shannon(rel);

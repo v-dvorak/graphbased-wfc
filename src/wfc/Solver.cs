@@ -1,12 +1,18 @@
 ﻿namespace wfc
 {
+    public delegate double EvaluateNode(HashSet<int> nodeOptions, int[] globalWeights);
     public class Solver : ISolver<Graph>
     {
         private readonly WeightedRandomSelector wrs;
+        private readonly EvaluateNode evaluateNode;
         public Rulebook SolverRulebook { get; private set; }
         private readonly int[] globalWeights;
-        public Solver(int[] globalWeights, Rulebook rulebook)
+        public Solver(int[] globalWeights, Rulebook rulebook, EvaluateNode? evaluateNode = null)
         {
+            if (evaluateNode is null)
+            {
+                this.evaluateNode = Entropy.Shannon;
+            }
             wrs = new WeightedRandomSelector();
             this.globalWeights = globalWeights;
             SolverRulebook = rulebook;
@@ -34,43 +40,6 @@
             result = fce(graf, pq)
          
         */
-        public Node LowestEntropy(Node[] nodes)
-        {
-            if (nodes.Length == 0)
-            {
-                throw new ArgumentOutOfRangeException("nodes", "Cannot find maximum in an empty list");
-            }
-            int i = 0;
-            while (i < nodes.Length)
-            {
-                if (!nodes[i].IsSet())
-                {
-                    break;
-                }
-                i++;
-            }
-            if (i == nodes.Length)
-            {
-                throw new ArgumentOutOfRangeException("nodes", "Cannot find any non-set node");
-            }
-            Node best = nodes[i];
-            double bestEntropy = Entropy.Shannon(globalWeights, best.Options);
-            while (i < nodes.Length)
-            {
-                Node currentNode = nodes[i];
-                if (!currentNode.IsSet())
-                {
-                    double entropy = Entropy.Shannon(globalWeights, nodes[i].Options);
-                    if (entropy < bestEntropy)
-                    {
-                        best = nodes[i];
-                        bestEntropy = entropy;
-                    }
-                }
-                i++;
-            }
-            return best;
-        }
         private Graph? RecursiveSolve2(Graph graph, PriorityQueue.PrioritySet<Node, double> pq, int depth)
         {
             //Node collapsingNode = LowestEntropy(graph.AllNodes);
@@ -136,7 +105,7 @@
                     child.Options = originalOptionsForChildren[i].Copy();
                     if (!child.IsSet())
                     {
-                        double prior = Entropy.Shannon(globalWeights, child.Options);
+                        double prior = evaluateNode(child.Options, globalWeights);
                         pq.TryUpdate(child, prior);
                     }
                 }
@@ -146,7 +115,7 @@
                     parent.Options = originalOptionsForParents[i].Copy();
                     if (!parent.IsSet())
                     {
-                        double prior = Entropy.Shannon(globalWeights, parent.Options);
+                        double prior = evaluateNode(parent.Options, globalWeights);
                         pq.TryUpdate(parent, prior);
                     }
                 }
@@ -163,7 +132,7 @@
             {
                 if (!node.IsSet())
                 {
-                    double prior = Entropy.Shannon(globalWeights, node.Options);
+                    double prior = evaluateNode(node.Options, globalWeights);
                     pq.Enqueue(node, prior);
                 }
             }
