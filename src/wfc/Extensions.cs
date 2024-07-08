@@ -14,10 +14,10 @@
     }
     public static class GraphExtensions
     {
-        public static Graph Copy(this Graph graph)
-        {
-            return graph.Copy();
-        }
+        public static Graph Copy(this Graph graph) => graph.Copy();
+        public static Edge Edge(this (int, int) edge) => new Edge(edge);
+        public static ConstraintById ConstraintById(this (int, int) constraint) => new ConstraintById(constraint);
+        public static ConstraintByNode ConstraintByNode(this (Node, int) constraint) => new ConstraintByNode(constraint);
     }
     public static class MathExtensions
     {

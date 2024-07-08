@@ -16,7 +16,7 @@ namespace Colors
         private static Color ContrastColor(Color color)
         {
             // source: https://stackoverflow.com/questions/1855884/determine-font-color-based-on-background-color
-            // slighlty edited
+            // slightly edited
 
             // Counting the perceptive luminance - human eye favors green color...      
             double luminance = (0.299 * color.R + 0.587 * color.G + 0.114 * color.B) / 255;

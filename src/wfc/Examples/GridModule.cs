@@ -20,7 +20,7 @@ namespace wfc.Examples
             int height = grid.GetLength(0);
             int width = grid.GetLength(1);
 
-            List<(int, int)> edges = GridModule.GetGridEdges(height, width, overlap);
+            List<Edge> edges = GridModule.GetGridEdges(height, width, overlap);
             Graph graph = new Graph(edges, solver.SolverRulebook.GetRuleCount(), GraphDirectedness.Undirected);
             Graph result = solver.Solve(graph);
             return GridModule.GraphToGrid(result, new int[height, width]);
@@ -35,28 +35,28 @@ namespace wfc.Examples
         /// <param name="width">Grid width.</param>
         /// <param name="overlap">True if relations should overlap, first cell in row is a neighbor with the last cell in the same row.</param>
         /// <returns>List of edges.</returns>
-        public static List<(int, int)> GetGridEdges(int height, int width, bool overlap = false)
+        public static List<Edge> GetGridEdges(int height, int width, bool overlap = false)
         {
-            List<(int, int)> output = new();
+            List<Edge> output = new();
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
                     if (j + 1 < width)
                     {
-                        output.Add((i * height + j, i * height + j + 1));
+                        output.Add((i * height + j, i * height + j + 1).Edge());
                     }
                     else if (overlap)
                     {
-                        output.Add((i * height + j, i * height));
+                        output.Add((i * height + j, i * height).Edge());
                     }
                     if (i + 1 < height)
                     {
-                        output.Add((i * height + j, (i + 1) * height + j));
+                        output.Add((i * height + j, (i + 1) * height + j).Edge());
                     }
                     else if (overlap)
                     {
-                        output.Add((i * height + j, j));
+                        output.Add((i * height + j, j).Edge());
                     }
                 }
             }
@@ -67,7 +67,7 @@ namespace wfc.Examples
         /// </summary>
         /// <param name="overlap">True if relations should overlap, first cell in row is a neighbor with the last cell in the same row.</param>
         /// <returns>List of edges.</returns>
-        public static List<(int, int)> GetGridEdges(int[,] grid, bool overlap = false)
+        public static List<Edge> GetGridEdges(int[,] grid, bool overlap = false)
         {
             return GetGridEdges(grid.GetLength(0), grid.GetLength(1), overlap: overlap);
         }

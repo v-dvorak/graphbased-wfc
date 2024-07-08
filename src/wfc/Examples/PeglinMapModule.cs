@@ -70,9 +70,9 @@
         /// </summary>
         /// <param name="map">Peglin Map representation.</param>
         /// <returns>List of edges.</returns>
-        public static List<(int, int)> GetEdges(IReadOnlyList<int[]> map)
+        public static List<Edge> GetEdges(IReadOnlyList<int[]> map)
         {
-            List<(int, int)> edges = new();
+            List<Edge> edges = new();
             for (int i = 0; i < map.Count - 1; i++)
             {
                 // top
@@ -80,30 +80,30 @@
                 {
                     for (int j = 0; j < map[i].Length; j++)
                     {
-                        edges.Add((map[i][j], map[i + 1][j]));
-                        edges.Add((map[i][j], map[i + 1][j + 1]));
+                        edges.Add((map[i][j], map[i + 1][j]).Edge());
+                        edges.Add((map[i][j], map[i + 1][j + 1]).Edge());
                     }
                 }
                 // middle
                 else if (i + 2 < map.Count && map[i].Length == map[i + 2].Length)
                 {
-                    edges.Add((map[i][0], map[i + 2][0]));
-                    edges.Add((map[i][0], map[i + 1][0]));
+                    edges.Add((map[i][0], map[i + 2][0]).Edge());
+                    edges.Add((map[i][0], map[i + 1][0]).Edge());
                     for (int j = 0; j < map[i + 1].Length; j++)
                     {
-                        edges.Add((map[i][j], map[i + 1][j]));
-                        edges.Add((map[i][j + 1], map[i + 1][j]));
+                        edges.Add((map[i][j], map[i + 1][j]).Edge());
+                        edges.Add((map[i][j + 1], map[i + 1][j]).Edge());
                     }
-                    edges.Add((map[i][^1], map[i + 1][^1]));
-                    edges.Add((map[i][^1], map[i + 2][^1]));
+                    edges.Add((map[i][^1], map[i + 1][^1]).Edge());
+                    edges.Add((map[i][^1], map[i + 2][^1]).Edge());
                 }
                 // bottom
                 else
                 {
                     for (int j = 0; j < map[i + 1].Length; j++)
                     {
-                        edges.Add((map[i][j], map[i + 1][j]));
-                        edges.Add((map[i][j + 1], map[i + 1][j]));
+                        edges.Add((map[i][j], map[i + 1][j]).Edge());
+                        edges.Add((map[i][j + 1], map[i + 1][j]).Edge());
                     }
                 }
             }

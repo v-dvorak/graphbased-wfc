@@ -1,5 +1,52 @@
-﻿namespace wfc
+﻿using System.Runtime.CompilerServices;
+
+namespace wfc
 {
+    public struct Edge
+    {
+        public int Parent;
+        public int Child;
+        public Edge(int parent, int child)
+        {
+            Parent = parent;
+            Child = child;
+        }
+        public Edge((int, int) edge)
+        {
+            Parent = edge.Item1;
+            Child = edge.Item2;
+        }
+    }
+    public struct ConstraintById
+    {
+        public int NodeId;
+        public int ForcedValue;
+        public ConstraintById(int nodeId, int forceValue)
+        {
+            NodeId = nodeId;
+            ForcedValue = forceValue;
+        }
+        public ConstraintById((int, int) constraint)
+        {
+            NodeId = constraint.Item1;
+            ForcedValue = constraint.Item2;
+        }
+    }
+    public struct ConstraintByNode
+    {
+        public Node Node;
+        public int ForcedValue;
+        public ConstraintByNode(Node node, int forcedValue)
+        {
+            Node = node;
+            ForcedValue = forcedValue;
+        }
+        public ConstraintByNode((Node, int) constraint)
+        {
+            Node = constraint.Item1;
+            ForcedValue = constraint.Item2;
+        }
+    }
     public enum GraphDirectedness { Undirected, Directed };
     public class Graph
     {
@@ -85,15 +132,15 @@
             totalAssigned = 0;
         }
 
-        public Graph(List<(int, int)> edges, int options, GraphDirectedness direct = GraphDirectedness.Directed)
+        public Graph(IReadOnlyList<Edge> edges, int options, GraphDirectedness direct = GraphDirectedness.Directed)
         {
             TotalOptions = options;
             // Determine unique node IDs from edges
             HashSet<int> nodeIds = new HashSet<int>();
             foreach (var edge in edges)
             {
-                nodeIds.Add(edge.Item1); // Parent node ID
-                nodeIds.Add(edge.Item2); // Child node ID
+                nodeIds.Add(edge.Parent); // Parent node ID
+                nodeIds.Add(edge.Child); // Child node ID
             }
 
             // Create nodes and populate AllNodes array
@@ -108,8 +155,8 @@
             // Build relationships (edges) between nodes
             foreach (var edge in edges)
             {
-                int parentId = edge.Item1;
-                int childId = edge.Item2;
+                int parentId = edge.Parent;
+                int childId = edge.Child;
 
                 Node parentNode = AllNodes[parentId];
                 Node childNode = AllNodes[childId];
@@ -123,9 +170,9 @@
                 }
             }
         }
-        public static List<(int, int)> ParseEdgesFromFile(string filePath)
+        public static List<Edge> ParseEdgesFromFile(string filePath)
         {
-            List<(int, int)> edges = new List<(int, int)>();
+            List<Edge> edges = new List<Edge>();
 
             try
             {
@@ -141,7 +188,7 @@
                             int first = int.Parse(parts[0]);
                             int second = int.Parse(parts[1]);
                             // add
-                            edges.Add((first, second));
+                            edges.Add(new Edge(first, second));
                         }
                         else
                         {
@@ -249,7 +296,7 @@
             }
             return true;
         }
-
+        
         public bool IsSet()
         {
             return isSet;

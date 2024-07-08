@@ -69,16 +69,16 @@ namespace wfc.Examples
         /// </summary>
         /// <param name="problem"><c>Sudoku</c> problem to work with.</param>
         /// <returns></returns>
-        public static List<(int, int)> GetSetCells(Sudoku problem)
+        public static List<ConstraintById> GetSetCells(Sudoku problem)
         {
-            List<(int, int)> output = new();
+            List<ConstraintById> output = new();
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
                     if (problem.Board[i, j] > 0)
                     {
-                        output.Add((i * 9 + j, problem.Board[i, j] - 1));
+                        output.Add(new ConstraintById(i * 9 + j, problem.Board[i, j] - 1));
                     }
                 }
             }
@@ -88,9 +88,9 @@ namespace wfc.Examples
         /// Returns list of edges/relations between cells in Sudoku.
         /// </summary>
         /// <returns>List of edges.</returns>
-        public static List<(int, int)> GetSudokuEdges()
+        public static List<Edge> GetSudokuEdges()
         {
-            List<(int, int)> edges = new List<(int, int)>();
+            List<Edge> edges = new();
             //return edges;
             for (int i = 0; i < 9; i++)
             {
@@ -99,14 +99,14 @@ namespace wfc.Examples
                     for (int k = 1; j + k < 9; k++)
                     {
                         // rows
-                        edges.Add((i * 9 + j, i * 9 + j + k));
+                        edges.Add((i * 9 + j, i * 9 + j + k).Edge());
                         // edges
-                        edges.Add((i + 9 * j, i + 9 * (j + k)));
+                        edges.Add((i + 9 * j, i + 9 * (j + k)).Edge());
                     }
                 }
             }
             // not an ideal solution, but it works
-            (int, int)[] directions = [
+            (int, int)[] basicRelations = [
                 (0, 1),   (0, 2),   (0, 9),   (0, 10), (0, 11), (0, 18), (0, 19), (0, 20),
                 (1, 2),   (1, 9),   (1, 10),  (1, 11), (1, 18), (1, 19), (1, 20),
                 (2, 9),   (2, 10),  (2, 11),  (2, 18), (2, 19), (2, 20),
@@ -121,9 +121,9 @@ namespace wfc.Examples
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    foreach ((int, int) s in directions)
+                    foreach ((int, int) relation in basicRelations)
                     {
-                        edges.Add(s.Add(j * 27 + i * 3));
+                        edges.Add(relation.Add(j * 27 + i * 3).Edge());
                     }
                 }
             }

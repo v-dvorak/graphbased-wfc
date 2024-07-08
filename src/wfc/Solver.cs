@@ -174,13 +174,13 @@
         {
             return RecursiveSolve2(graph, SetUpPriorityQueue(graph), 0);
         }
-        public Graph? Solve(Graph graph, IEnumerable<(Node, int)> constraints)
+        public Graph? Solve(Graph graph, IEnumerable<ConstraintByNode> constraints)
         {
-            foreach ((Node node, int value) in constraints)
+            foreach (ConstraintByNode constraint in constraints)
             {
                 try
                 {
-                    if (!TryForceValueToNodeWithUpdate(graph, node, value))
+                    if (!TryForceValueToNodeWithUpdate(graph, constraint.Node, constraint.ForcedValue))
                     {
                         // something wrong with neighbor updates
                         Console.WriteLine("Unfeasible constraints");
@@ -196,14 +196,14 @@
             }
             return Solve(graph);
         }
-        public Graph? Solve(Graph graph, IEnumerable<(int, int)> constraints)
+        public Graph? Solve(Graph graph, IEnumerable<ConstraintById> constraints)
         {
             // constraints format : (node id, value)
-            foreach ((int nodeId, int value) in constraints)
+            foreach (ConstraintById constraint in constraints)
             {
                 try
                 {
-                    if (!TryForceValueToNodeWithUpdate(graph, graph.AllNodes[nodeId], value))
+                    if (!TryForceValueToNodeWithUpdate(graph, graph.AllNodes[constraint.NodeId], constraint.ForcedValue))
                     {
                         // something wrong with neighbor updates
                         Console.WriteLine("Unfeasible constraints");

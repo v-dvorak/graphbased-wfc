@@ -24,11 +24,11 @@ namespace WFCTests
                 new Rule(0, [1]),
                 new Rule(1, [0]),
                 ];
-            List<(int, int)> edges = [
-                (0,1),
-                (1,2),
-                (2,3),
-                (3,0),
+            List<Edge> edges = [
+                (0,1).Edge(),
+                (1,2).Edge(),
+                (2,3).Edge(),
+                (3,0).Edge(),
                 ];
             int[] globalWeights = [1, 1];
             Graph g = new Graph(edges, rules.Length);
@@ -51,11 +51,11 @@ namespace WFCTests
                 new Rule(0, [1]),
                 new Rule(1, [0]),
                 ];
-            List<(int, int)> edges = [
-                (0,1),
-                (1,2),
-                (2,3),
-                (3,0),
+            List<Edge> edges = [
+                (0,1).Edge(),
+                (1,2).Edge(),
+                (2,3).Edge(),
+                (3,0).Edge(),
                 ];
             int[] globalWeights = [1, 1];
             Graph g = new Graph(edges, rules.Length);
@@ -63,7 +63,7 @@ namespace WFCTests
             Solver sl = new Solver(globalWeights, rb);
 
             // Act
-            Graph result = sl.Solve(g, [(g.AllNodes[0], 0)]);
+            Graph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode()]);
 
             // Assert
             Assert.IsTrue(result is not null &&
@@ -78,11 +78,11 @@ namespace WFCTests
                 new Rule(0, [1]),
                 new Rule(1, [0]),
                 ];
-            List<(int, int)> edges = [
-                (0,1),
-                (1,2),
-                (2,3),
-                (3,0),
+            List<Edge> edges = [
+                (0,1).Edge(),
+                (1,2).Edge(),
+                (2,3).Edge(),
+                (3,0).Edge(),
                 ];
             int[] globalWeights = [1, 1];
             Graph g = new Graph(edges, rules.Length);
@@ -90,7 +90,7 @@ namespace WFCTests
             Solver sl = new Solver(globalWeights, rb);
 
             // Act
-            Graph result = sl.Solve(g, [(g.AllNodes[0], 0), (g.AllNodes[1], 0)]);
+            Graph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode(), (g.AllNodes[1], 0).ConstraintByNode()]);
 
             // Assert
             Assert.IsTrue(result is null);
@@ -103,11 +103,11 @@ namespace WFCTests
                 new Rule(0, [1]),
                 new Rule(1, [0]),
                 ];
-            List<(int, int)> edges = [
-                (0,1),
-                (1,2),
-                (2,3),
-                (3,0),
+            List<Edge> edges = [
+                (0,1).Edge(),
+                (1,2).Edge(),
+                (2,3).Edge(),
+                (3,0).Edge(),
                 ];
             int[] globalWeights = [1, 1];
             Graph g = new Graph(edges, rules.Length);
@@ -115,7 +115,7 @@ namespace WFCTests
             Solver sl = new Solver(globalWeights, rb);
 
             // Act
-            Graph result = sl.Solve(g, [(g.AllNodes[0], 0), (g.AllNodes[0], 0)]);
+            Graph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode(), (g.AllNodes[0], 0).ConstraintByNode()]);
 
             // Assert
             Assert.IsTrue(result is null);
