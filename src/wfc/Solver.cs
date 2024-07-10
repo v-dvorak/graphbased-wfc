@@ -141,10 +141,21 @@
 
         public Graph? Solve(Graph graph)
         {
+            graph.InitializeNodeOptions(SolverRulebook.RuleCount);
+            return RecursiveSolve2(graph, SetUpPriorityQueue(graph), 0);
+        }
+        public Graph? Solve(Graph graph, bool initialized = false)
+        {
+            if (!initialized)
+            {
+                graph.InitializeNodeOptions(SolverRulebook.RuleCount);
+            }
             return RecursiveSolve2(graph, SetUpPriorityQueue(graph), 0);
         }
         public Graph? Solve(Graph graph, IEnumerable<ConstraintByNode> constraints)
         {
+            graph.InitializeNodeOptions(SolverRulebook.RuleCount);
+
             foreach (ConstraintByNode constraint in constraints)
             {
                 try
@@ -163,30 +174,11 @@
                     return null;
                 }
             }
-            return Solve(graph);
+            return Solve(graph, initialized: true);
         }
         public Graph? Solve(Graph graph, IEnumerable<ConstraintById> constraints)
         {
-            // constraints format : (node id, value)
-            foreach (ConstraintById constraint in constraints)
-            {
-                try
-                {
-                    if (!TryForceValueToNodeWithUpdate(graph, graph.AllNodes[constraint.NodeId], constraint.ForcedValue))
-                    {
-                        // something wrong with neighbor updates
-                        Console.WriteLine("Unfeasible constraints");
-                        return null;
-                    }
-                }
-                catch (ArgumentException)
-                {
-                    // user tried to assign value to an already set node
-                    Console.WriteLine("Multiple assignments to one node");
-                    return null;
-                }
-            }
-            return Solve(graph);
+            return Solve(graph, constraints.Select(constraint => (graph.AllNodes[constraint.NodeId], constraint.ForcedValue).ConstraintByNode()));
         }
         public bool TryForceValueToNodeWithUpdate(Graph graph, Node node, int chosen)
         {

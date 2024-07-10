@@ -103,6 +103,13 @@ namespace wfc
             node.AssignValue(chosen);
             totalAssigned += 1;
         }
+        public void InitializeNodeOptions(int options)
+        {
+            foreach (Node node in AllNodes)
+            {
+                node.InitializeOptions(options);
+            }
+        }
         public void ResetValueAssignment(Node node)
         {
             if (!node.IsSet())
@@ -132,7 +139,7 @@ namespace wfc
             totalAssigned = 0;
         }
 
-        public Graph(IReadOnlyList<Edge> edges, int options, GraphDirectedness direct = GraphDirectedness.Directed)
+        public Graph(IReadOnlyList<Edge> edges, GraphDirectedness direct = GraphDirectedness.Directed, int options = -1)
         {
             TotalOptions = options;
             // Determine unique node IDs from edges
@@ -148,7 +155,7 @@ namespace wfc
 
             foreach (int nodeId in nodeIds)
             {
-                Node newNode = new Node(nodeId, TotalOptions);
+                Node newNode = new Node(nodeId);
                 AllNodes[nodeId] = newNode;
             }
 
@@ -168,6 +175,10 @@ namespace wfc
                     parentNode.AddParent(childNode);
                     childNode.AddChild(parentNode);
                 }
+            }
+            if (options != -1)
+            {
+                InitializeNodeOptions(options);
             }
         }
         public static List<Edge> ParseEdgesFromFile(string filePath)
@@ -223,7 +234,7 @@ namespace wfc
         private bool isSet = false;
         public List<Node> Parents;
         public List<Node> Children;
-        public HashSet<int> Options;
+        public HashSet<int>? Options;
         public Node(int id, int totalOptions)
         {
             Id = id;
@@ -236,9 +247,24 @@ namespace wfc
                 Options.Add(i);
             }
         }
+        public Node(int id)
+        {
+            Id = id;
+
+            Parents = new List<Node>();
+            Children = new List<Node>();
+        }
         public void UpdateOptions(int val)
         {
             Options.Remove(val);
+        }
+        public void InitializeOptions(int options)
+        {
+            Options = new();
+            for (int i = 0; i < options; i++)
+            {
+                Options.Add(i);
+            }
         }
         public bool TryUpdateNodeNeighbors(Rule ruleForChildren, Rule ruleForParents)
         {

@@ -14,7 +14,7 @@ namespace wfc.Examples
         }
         public Sudoku Solve(Sudoku problem)
         {
-            Graph g = new Graph(SudokuModule.GetSudokuEdges(), 9, GraphDirectedness.Undirected);
+            Graph g = new Graph(SudokuModule.GetSudokuEdges(), GraphDirectedness.Undirected);
             Graph result = solver.Solve(g, SudokuModule.GetSetCells(problem));
             Sudoku output = new();
             for (int i = 0; i < 9; i++)

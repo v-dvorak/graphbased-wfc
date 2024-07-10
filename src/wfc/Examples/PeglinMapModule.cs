@@ -10,7 +10,7 @@
         /// <returns></returns>
         public static Graph MapToGraph(IReadOnlyList<int[]> map, int totalOptions)
         {
-            return new Graph(GetEdges(map), totalOptions);
+            return new Graph(GetEdges(map));
         }
         /// <summary>
         /// Given height and width generates Peglin Map.
