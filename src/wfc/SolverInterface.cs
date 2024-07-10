@@ -11,6 +11,6 @@
         /// </summary>
         /// <param name="example"></param>
         /// <returns></returns>
-        public T Solve(T example);
+        public T? Solve(T example);
     }
 }
