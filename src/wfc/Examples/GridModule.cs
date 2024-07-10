@@ -21,7 +21,7 @@ namespace wfc.Examples
             int width = grid.GetLength(1);
 
             List<Edge> edges = GridModule.GetGridEdges(height, width, overlap);
-            Graph graph = new Graph(edges, solver.SolverRulebook.GetRuleCount(), GraphDirectedness.Undirected);
+            Graph graph = new Graph(edges, solver.SolverRulebook.RuleCount, GraphDirectedness.Undirected);
             Graph result = solver.Solve(graph);
             return GridModule.GraphToGrid(result, new int[height, width]);
         }

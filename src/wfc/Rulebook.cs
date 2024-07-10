@@ -31,14 +31,11 @@ namespace wfc
     {
         private readonly Rule[] rulesForChildren;
         private readonly Rule[] rulesForParents;
+        public int RuleCount { get { return rulesForChildren.Length; } }
         public Rulebook(Rule[] rules)
         {
             rulesForChildren = rules;
             rulesForParents = GetInverseRules(rules);
-        }
-        public int GetRuleCount()
-        {
-            return rulesForChildren.Length;
         }
         public Rule GetRuleForChildren(int parent)
         {
