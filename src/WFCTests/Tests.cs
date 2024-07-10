@@ -33,7 +33,7 @@ namespace WFCTests
             int[] globalWeights = [1, 1];
             Graph g = new Graph(edges);
             Rulebook rb = new Rulebook(rules);
-            Solver sl = new Solver(globalWeights, rb);
+            Solver sl = new Solver(rb, globalWeights);
 
             // Act
             Graph result = sl.Solve(g);
@@ -60,7 +60,7 @@ namespace WFCTests
             int[] globalWeights = [1, 1];
             Graph g = new Graph(edges);
             Rulebook rb = new Rulebook(rules);
-            Solver sl = new Solver(globalWeights, rb);
+            Solver sl = new Solver(rb, globalWeights);
 
             // Act
             Graph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode()]);
@@ -87,7 +87,7 @@ namespace WFCTests
             int[] globalWeights = [1, 1];
             Graph g = new Graph(edges);
             Rulebook rb = new Rulebook(rules);
-            Solver sl = new Solver(globalWeights, rb);
+            Solver sl = new Solver(rb, globalWeights);
 
             // Act
             Graph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode(), (g.AllNodes[1], 0).ConstraintByNode()]);
@@ -112,7 +112,7 @@ namespace WFCTests
             int[] globalWeights = [1, 1];
             Graph g = new Graph(edges);
             Rulebook rb = new Rulebook(rules);
-            Solver sl = new Solver(globalWeights, rb);
+            Solver sl = new Solver(rb, globalWeights);
 
             // Act
             Graph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode(), (g.AllNodes[0], 0).ConstraintByNode()]);

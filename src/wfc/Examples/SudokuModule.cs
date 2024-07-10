@@ -8,7 +8,6 @@ namespace wfc.Examples
         public SudokuSolver()
         {
             solver = new Solver(
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
                 new Rulebook(Rulebook.GetColoringRules(9))
                 );
         }

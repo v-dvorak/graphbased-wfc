@@ -7,12 +7,12 @@ namespace wfc.Examples
         private readonly bool overlap;
         public GridSolver(int[] globalWeights, Rule[] rules, bool overlap = false)
         {
-            solver = new Solver(globalWeights, new Rulebook(rules));
+            solver = new Solver(new Rulebook(rules), globalWeights);
             this.overlap = overlap;
         }
         public GridSolver(int[] globalWeights, Rulebook rulebook, bool overlap = false)
         {
-            solver = new Solver(globalWeights, rulebook);
+            solver = new Solver(rulebook, globalWeights);
             this.overlap = overlap;
         }
         public int[,] Solve(int[,] grid)

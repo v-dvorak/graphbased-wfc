@@ -7,15 +7,25 @@
         private readonly EvaluateNode evaluateNode;
         public Rulebook SolverRulebook { get; private set; }
         private readonly int[] globalWeights;
-        public Solver(int[] globalWeights, Rulebook rulebook, EvaluateNode? evaluateNode = null)
+        public Solver(Rulebook rulebook, int[] globalWeights, EvaluateNode? evaluateNode = null)
         {
             if (evaluateNode is null)
             {
                 this.evaluateNode = Entropy.Shannon;
             }
             wrs = new WeightedRandomSelector();
-            this.globalWeights = globalWeights;
             SolverRulebook = rulebook;
+            this.globalWeights = globalWeights;
+        }
+        public Solver(Rulebook rulebook, EvaluateNode? evaluateNode = null)
+        {
+            if (evaluateNode is null)
+            {
+                this.evaluateNode = Entropy.Shannon;
+            }
+            wrs = new WeightedRandomSelector();
+            SolverRulebook = rulebook;
+            globalWeights = new int[SolverRulebook.RuleCount].Ones();
         }
 
         /*

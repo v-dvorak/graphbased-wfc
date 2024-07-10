@@ -11,6 +11,14 @@
             }
             Console.WriteLine();
         }
+        public static int[] Ones(this int[] list)
+        {
+            for (int i = 0; i < list.Length; i++)
+            {
+                list[i] = 1;
+            }
+            return list;
+        }
     }
     public static class GraphExtensions
     {
