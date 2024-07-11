@@ -7,6 +7,19 @@ namespace wfc
         public int Item { get; } = Item;
         public int[] Options { get; } = Options;
 
+        /// <summary>
+        /// Returns a list of inverse rules.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// Rule(0, [0, 1, 2])
+        /// </code>
+        ///  has inverse rules: 
+        /// <code>
+        /// [ Rule(0, [0]), Rule(1, [0]), Rule(2, [0]) ] 
+        /// </code>
+        /// </example>
+        /// <returns>An array of inverse rules.</returns>
         public Rule[] GetInverseRules()
         {
             Rule[] output = new Rule[Options.Length];
@@ -45,7 +58,7 @@ namespace wfc
         {
             return rulesForParents[child];
         }
-        public static Rule[] GetColoringRules(int colorCount)
+        public static Rule[] CreateColoringRules(int colorCount)
         {
             Rule[] output = new Rule[colorCount];
             for (int i = 0; i < colorCount; i++)
@@ -66,7 +79,7 @@ namespace wfc
             }
             return output;
         }
-        public static Rule[] GetCascadeRules(int colorCount, bool overlap = false)
+        public static Rule[] CreateCascadeRules(int colorCount, bool overlap = false)
         {
             if (colorCount == 1)
             {
@@ -85,9 +98,13 @@ namespace wfc
             output[colorCount - 1] = new Rule(colorCount - 1, [colorCount - 2, colorCount - 1]);
             return output;
         }
+        /// <summary>
+        /// Creates an array of inverse rules to apply in the opposite direction than the rules given as param.
+        /// </summary>
+        /// <param name="rules">Rules to invert.</param>
+        /// <returns>An array of <see cref="Rule"/></returns>
         public static Rule[] GetInverseRules(Rule[] rules)
         {
-            // given an array of rules parent->children returns an array of rules children->parents
             HashSet<int>[] tempInverse = new HashSet<int>[rules.Length];
             for (int i = 0; i < rules.Length; i++)
             {
@@ -96,8 +113,8 @@ namespace wfc
 
             foreach (Rule rule in rules)
             {
-                Rule[] invs = rule.GetInverseRules();
-                foreach (Rule inv in invs)
+                Rule[] inverse = rule.GetInverseRules();
+                foreach (Rule inv in inverse)
                 {
                     foreach (int option in inv.Options)
                     {
@@ -118,6 +135,30 @@ namespace wfc
     }
     public static class RuleParser
     {
+        /// <summary>
+        /// Parses a list of rules from a JSON file and converts them to <see cref="Rule"/>s.
+        /// </summary>
+        /// <param name="path">The path to the JSON file containing the rules.</param>
+        /// <returns>A list of <see cref="Rule"/> structs parsed from the JSON file and converted to numerical representation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="path"/> is null or empty.</exception>
+        /// <exception cref="FileNotFoundException">Thrown when the specified file does not exist.</exception>
+        /// <exception cref="IOException">Thrown when an I/O error occurs while opening or reading the file.</exception>
+        /// <exception cref="JsonException">Thrown when the JSON data is invalid or cannot be deserialized.</exception>
+        /// <remarks>
+        /// This method reads a JSON file specified by <paramref name="path"/>, parses the content into a list of <see cref="JSONRule"/> objects,
+        /// and then converts each <see cref="JSONRule"/> to a <see cref="Rule"/> struct.
+        /// </remarks>
+        public static List<Rule> RulesFromJSON(string path)
+        {
+            List<JSONRule> rules = ParseFromJSON(path);
+            List<Rule> output = new(rules.Count);
+            foreach (JSONRule rule in rules)
+            {
+                (int item, int[] options) = rule.GetNumericalRepresentation();
+                output.Add(new Rule(item, options));
+            }
+            return output;
+        }
         private static List<JSONRule> ParseFromJSON(string path)
         {
             string json;
@@ -134,17 +175,6 @@ namespace wfc
             }
             return items;
         }
-        public static List<Rule> RulesFromJSON(string path)
-        {
-            List<JSONRule> rules = ParseFromJSON(path);
-            List<Rule> output = new(rules.Count);
-            foreach (JSONRule rule in rules)
-            {
-                (int item, int[] options) = rule.GetNumericalRepresentation();
-                output.Add(new Rule(item, options));
-            }
-            return output;
-        }
         private class JSONRule
         {
             public string Item { get; set; }
@@ -160,10 +190,6 @@ namespace wfc
                 }
                 return (item, options);
             }
-        }
-        private class JSONData
-        {
-            public List<JSONRule> Items { get; set; }
         }
     }
 }

@@ -8,7 +8,7 @@ namespace wfc.Examples
         public SudokuSolver()
         {
             solver = new Solver(
-                new Rulebook(Rulebook.GetColoringRules(9))
+                new Rulebook(Rulebook.CreateColoringRules(9))
                 );
         }
         public Sudoku Solve(Sudoku problem)
