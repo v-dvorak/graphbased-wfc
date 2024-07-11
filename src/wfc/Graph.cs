@@ -269,6 +269,32 @@
 
             return edges;
         }
+        /// <summary>
+        /// Collects all assigned values into a <see cref="List{int}"/>.
+        /// </summary>
+        /// <returns>List of <c>int</c>s.</returns>
+        public List<int> ToList()
+        {
+            List<int> output = new(AllNodes.Length);
+            foreach (Node node in AllNodes)
+            {
+                output.Add(node.AssignedValue);
+            }
+            return output;
+        }
+        /// <summary>
+        /// Collects all assigned values into a <see cref="List{(int, int)}"/>, the format is <c>(nodeId, assignedValue)</c>.
+        /// </summary>
+        /// <returns>List of tuples, <c>(int, int)</c>.</returns>
+        public List<(int, int)> ToListOfTuples()
+        {
+            List<(int, int)> output = new(AllNodes.Length);
+            foreach (Node node in AllNodes)
+            {
+                output.Add((node.Id, node.AssignedValue));
+            }
+            return output;
+        }
         public override string ToString()
         {
             string output = "Graph";
