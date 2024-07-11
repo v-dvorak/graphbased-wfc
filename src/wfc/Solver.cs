@@ -1,6 +1,5 @@
 ﻿namespace wfc
 {
-    public delegate double EvaluateNode(IEnumerable<int> nodeOptions, IReadOnlyList<int> globalWeights);
     public class Solver : ISolver<Graph>
     {
         private readonly WeightedRandomSelector wrs;
@@ -113,7 +112,7 @@
                 {
                     Node child = collapsingNode.Children[i];
                     child.Options = originalOptionsForChildren[i].Copy();
-                    if (!child.IsSet())
+                    if (!child.IsSet)
                     {
                         double prior = evaluateNode(child.Options, globalWeights);
                         pq.TryUpdate(child, prior);
@@ -123,7 +122,7 @@
                 {
                     Node parent = collapsingNode.Parents[i];
                     parent.Options = originalOptionsForParents[i].Copy();
-                    if (!parent.IsSet())
+                    if (!parent.IsSet)
                     {
                         double prior = evaluateNode(parent.Options, globalWeights);
                         pq.TryUpdate(parent, prior);
@@ -140,7 +139,7 @@
             PriorityQueue.PrioritySet<Node, double> pq = new();
             foreach (Node node in graph.AllNodes)
             {
-                if (!node.IsSet())
+                if (!node.IsSet)
                 {
                     double prior = evaluateNode(node.Options, globalWeights);
                     pq.Enqueue(node, prior);

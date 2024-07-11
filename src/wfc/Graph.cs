@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace wfc
+﻿namespace wfc
 {
     public struct Edge
     {
@@ -53,92 +51,13 @@ namespace wfc
         public Node[] AllNodes;
         public int TotalOptions;
         private int totalAssigned = 0;
-        public bool AllSet
-        {
-            get
-            {
-                return AllNodes.Length <= totalAssigned;
-            }
-        }
-        public void SetTotalAssigned(int total)
-        {
-            totalAssigned = total;
-        }
-        public Graph Copy()
-        {
-            // initialize all nodes
-            Node[] newNodes = new Node[AllNodes.Length];
-            for (int i = 0; i < AllNodes.Length; i++)
-            {
-                newNodes[i] = new Node(AllNodes[i].Id, 0);
-                // options
-                newNodes[i].Options = AllNodes[i].Options.Copy();
-                // value
-                if (AllNodes[i].IsSet())
-                {
-                    newNodes[i].AssignValue(AllNodes[i].AssignedValue);
-                }
-            }
-
-            // assign parents and children
-            for (int i = 0; i < newNodes.Length; i++)
-            {
-                foreach (Node child in AllNodes[i].Children)
-                {
-                    newNodes[i].AddChild(newNodes[child.Id]);
-                }
-                foreach (Node parent in AllNodes[i].Parents)
-                {
-                    newNodes[i].AddParent(newNodes[parent.Id]);
-                }
-            }
-            Graph g = new Graph(newNodes, TotalOptions);
-            g.SetTotalAssigned(totalAssigned);
-            return g;
-        }
-
-        public void AssignValueToNode(Node node, int chosen)
-        {
-            // assigns value to node, has no side effects
-            node.AssignValue(chosen);
-            totalAssigned += 1;
-        }
-        public void InitializeNodeOptions(int options)
-        {
-            foreach (Node node in AllNodes)
-            {
-                node.InitializeOptions(options);
-            }
-        }
-        public void ResetValueAssignment(Node node)
-        {
-            if (!node.IsSet())
-            {
-                throw new ArgumentException("node", "Cannot reset unsigned node");
-            }
-            node.ResetValue();
-            totalAssigned -= 1;
-        }
-        public void Reset()
-        {
-            HashSet<int> options = new HashSet<int>(TotalOptions);
-            for (int i = 0; i < TotalOptions; i++)
-            {
-                options.Add(i);
-            }
-            foreach (Node node in AllNodes)
-            {
-                node.ResetValue();
-                node.Options = options.Copy();
-            }
-        }
+        public bool AllSet { get => AllNodes.Length <= totalAssigned; }
         public Graph(Node[] nodes, int totalOptions)
         {
             AllNodes = nodes;
             TotalOptions = totalOptions;
             totalAssigned = 0;
         }
-
         public Graph(IReadOnlyList<Edge> edges, GraphDirectedness direct = GraphDirectedness.Directed, int options = -1)
         {
             TotalOptions = options;
@@ -181,6 +100,140 @@ namespace wfc
                 InitializeNodeOptions(options);
             }
         }
+        /// <summary>
+        /// Should only be used by the <see cref="Copy()"/> method!
+        /// </summary>
+        /// <param name="total">Value to change <see cref="totalAssigned"/> to.</param>
+        public void SetTotalAssigned(int total)
+        {
+            totalAssigned = total;
+        }
+        public Graph Copy()
+        {
+            // initialize all nodes
+            Node[] newNodes = new Node[AllNodes.Length];
+            for (int i = 0; i < AllNodes.Length; i++)
+            {
+                newNodes[i] = new Node(AllNodes[i].Id, 0);
+                // options
+                newNodes[i].Options = AllNodes[i].Options.Copy();
+                // value
+                if (AllNodes[i].IsSet)
+                {
+                    newNodes[i].AssignValue(AllNodes[i].AssignedValue);
+                }
+            }
+
+            // assign parents and children
+            for (int i = 0; i < newNodes.Length; i++)
+            {
+                foreach (Node child in AllNodes[i].Children)
+                {
+                    newNodes[i].AddChild(newNodes[child.Id]);
+                }
+                foreach (Node parent in AllNodes[i].Parents)
+                {
+                    newNodes[i].AddParent(newNodes[parent.Id]);
+                }
+            }
+            Graph g = new Graph(newNodes, TotalOptions);
+            g.SetTotalAssigned(totalAssigned);
+            return g;
+        }
+        /// <summary>
+        /// Sets value <see cref="int"/> to a given <see cref="Node"/>, does not update node's options.
+        /// </summary>
+        /// <param name="node">Node whose value will change.</param>
+        /// <param name="chosen">Value to assign to given node.</param>
+        public void AssignValueToNode(Node node, int chosen)
+        {
+            // assigns value to node, has no side effects
+            node.AssignValue(chosen);
+            totalAssigned += 1;
+        }
+        /// <summary>
+        /// Initializes all nodes' <see cref="Node.Options"/> to given amount of options.
+        /// </summary>
+        /// <param name="options">Number of options every node will have.</param>
+        public void InitializeNodeOptions(int options)
+        {
+            foreach (Node node in AllNodes)
+            {
+                node.InitializeOptions(options);
+            }
+        }
+        /// <summary>
+        /// Resets single node's <see cref="Node.AssignedValue"/> and account for it in <see cref="Graph.totalAssigned"/>.
+        /// Throws an exception if given node does not have a value assigned.
+        /// </summary>
+        /// <param name="node">Node whose value will be reset.</param>
+        /// <exception cref="ArgumentException">Given node does not gave a value assigned.</exception>
+        public void ResetValueAssignment(Node node)
+        {
+            if (!node.IsSet)
+            {
+                throw new ArgumentException("node", "Cannot reset unsigned node");
+            }
+            node.ResetValue();
+            totalAssigned -= 1;
+        }
+        /// <summary>
+        /// Goes through every <see cref="Node"/> and resets if <see cref="Node.Options"/>.
+        /// </summary>
+        public void Reset()
+        {
+            foreach (Node node in AllNodes)
+            {
+                node.InitializeOptions(TotalOptions);
+            }
+        }
+        /// <summary>
+        /// Parses a list of edges from a specified file.
+        /// </summary>
+        /// <param name="filePath">The path to the file containing graph's edges.</param>
+        /// <returns>A list of <see cref="Edge"/> structs parsed from the file.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="filePath"/> is null or empty.</exception>
+        /// <exception cref="FileNotFoundException">Thrown when the specified file does not exist.</exception>
+        /// <exception cref="IOException">Thrown when an I/O error occurs while opening the file.</exception>
+        /// <exception cref="FormatException">Thrown when the file contains invalid edge data.</exception>
+        /// <remarks>
+        /// This method reads a file specified by <paramref name="filePath"/> and parses each line to create a list of edges.
+        /// Each line in the file should represent an edge with two integers separated by a space.
+        /// Example file content:
+        /// <code>
+        /// 1 2
+        /// 2 3
+        /// 3 4
+        /// </code>
+        /// </remarks>
+        /// <example>
+        /// The following example demonstrates how to use the <see cref="ParseEdgesFromFile"/> method:
+        /// <code>
+        /// using System;
+        /// using System.Collections.Generic;
+        ///
+        /// public class Program
+        /// {
+        ///     public static void Main()
+        ///     {
+        ///         try
+        ///         {
+        ///             string filePath = "edges.txt";
+        ///             List&lt;Edge&gt; edges = ParseEdgesFromFile(filePath);
+        ///
+        ///             foreach (var edge in edges)
+        ///             {
+        ///                 Console.WriteLine($"Edge: {edge.First} - {edge.Second}");
+        ///             }
+        ///         }
+        ///         catch (Exception ex)
+        ///         {
+        ///             Console.WriteLine($"An error occurred: {ex.Message}");
+        ///         }
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
         public static List<Edge> ParseEdgesFromFile(string filePath)
         {
             List<Edge> edges = new List<Edge>();
@@ -231,7 +284,7 @@ namespace wfc
     {
         public int Id { get; }
         public int AssignedValue { get; private set; } = -1;
-        private bool isSet = false;
+        public bool IsSet { get; private set; } = false;
         public List<Node> Parents;
         public List<Node> Children;
         public HashSet<int>? Options;
@@ -266,19 +319,21 @@ namespace wfc
                 Options.Add(i);
             }
         }
+        /// <summary>
+        /// Based on given rules, updates options of <see cref="Children"/> and <see cref="Parents"/>.
+        /// </summary>
+        /// <param name="ruleForChildren"><see cref="Rule"/> to apply to <see cref="Children"/>.</param>
+        /// <param name="ruleForParents"><see cref="Rule"/> to apply to <see cref="Parents"/>.</param>
+        /// <returns></returns>
         public bool TryUpdateNodeNeighbors(Rule ruleForChildren, Rule ruleForParents)
         {
             foreach (Node child in Children)
             {
-                if (child.IsSet())
+                if (child.IsSet)
                 {
                     // chosen color does not satisfy current setting
                     if (!ruleForChildren.Options.Contains(child.AssignedValue))
                     {
-                        // continue while loop (with other options)
-                        //Console.WriteLine("Child is not consistent");
-                        //Console.WriteLine($"Child {child.Id}, Parent {Id}");
-                        //Console.WriteLine($"Child options {child.AssignedValue}, Parent value {AssignedValue}");
                         return false;
                     }
                     continue;
@@ -286,25 +341,19 @@ namespace wfc
 
                 child.Options.RemoveWhere(s => !ruleForChildren.Options.Contains(s));
 
+                // no value can be set
                 if (child.Options.Count == 0)
                 {
-                    // continue while loop (with other options)
-                    //Console.WriteLine("Child cant be filled anymore");
-                    //Console.WriteLine($"Child {child.Id}, Parent {Id}");
                     return false;
                 }
             }
             foreach (Node parent in Parents)
             {
-                if (parent.IsSet())
+                if (parent.IsSet)
                 {
                     // chosen color does not satisfy current setting
                     if (!ruleForParents.Options.Contains(parent.AssignedValue))
                     {
-                        // continue while loop (with other options)
-                        //Console.WriteLine("Parent is not consistent");
-                        //Console.WriteLine($"Parent {parent.Id}, child {Id}");
-                        //Console.WriteLine($"Parent options {parent.AssignedValue}, Child value {AssignedValue}");
                         return false;
                     }
                     continue;
@@ -312,32 +361,33 @@ namespace wfc
 
                 parent.Options.RemoveWhere(s => !ruleForParents.Options.Contains(s));
 
+                // no value can be set
                 if (parent.Options.Count == 0)
                 {
-                    //// continue while loop (with other options)
-                    //Console.WriteLine("Parent cant be filled anymore");
-                    //Console.WriteLine($"Parent {parent.Id}, Child {Id}");
                     return false;
                 }
             }
             return true;
         }
-        
-        public bool IsSet()
-        {
-            return isSet;
-        }
+        /// <summary>
+        /// Assigns a value to the object if it has not already been set.
+        /// </summary>
+        /// <param name="value">The value to be assigned.</param>
+        /// <exception cref="ArgumentException"> thrown when the value has already been set.</exception>
         public void AssignValue(int value)
         {
-            if (IsSet()) throw new ArgumentException("Can't set value, value is already set.", "value");
+            if (IsSet) throw new ArgumentException("Can't set value, value is already set.", nameof(value));
 
             AssignedValue = value;
-            isSet = true;
+            IsSet = true;
         }
+        /// <summary>
+        /// Resets node's value.
+        /// </summary>
         public void ResetValue()
         {
             AssignedValue = -1;
-            isSet = false;
+            IsSet = false;
         }
         public void AddChild(Node child)
         {
