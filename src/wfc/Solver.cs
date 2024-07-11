@@ -26,41 +26,26 @@
             SolverRulebook = rulebook;
             globalWeights = new int[SolverRulebook.RuleCount].Ones();
         }
-
-        /*
-        
-        x = pq.dequeue()
-
-        while x.options != [] and result neuspesny:
-            color = weighted_random(x.options)
-            x.set_color(color)
-
-            rule = rulebook(color)
-
-            foreach child in x.children:
-                child.update_options(rule, color)
-            
-                if updated:
-                    entropy = shannon(child)
-                    pq.update(child, entropy)
-            
-                // edge cases returny
-            
-            result = fce(graf, pq)
-         
-        */
+        /// <summary>
+        /// Main solver method, takes in initialized graph and tries to solve it with rules given by the Solver itself.
+        /// </summary>
+        /// <param name="graph"><see cref="Graph"/> to solve.</param>
+        /// <param name="pq"><see cref="PriorityQueue.PrioritySet{TElement, TPriority}"/></param>
+        /// <param name="depth">Debug param, recursion depth.</param>
+        /// <returns>Graph with all values set, null if the graph can't be solved according to rules.</returns>
         private Graph? RecursiveSolve2(Graph graph, PriorityQueue.PrioritySet<Node, double> pq, int depth)
         {
-            //Node collapsingNode = LowestEntropy(graph.AllNodes);
+            // get node to collapse
             Node collapsingNode;
             double collapsingNodePriority;
             pq.TryDequeue(out collapsingNode, out collapsingNodePriority);
 
-            List<int> opts = [.. collapsingNode.Options];
-            List<int> wghts = new();
-            foreach (int k in opts)
+            // convert node options and weights to lists (enables simple removal of elements)
+            List<int> options = [.. collapsingNode.Options];
+            List<int> weights = new();
+            foreach (int k in options)
             {
-                wghts.Add(globalWeights[k]);
+                weights.Add(globalWeights[k]);
             }
 
             // store options for possible reset
@@ -76,13 +61,13 @@
             }
 
             // LOOK FOR SOLUTION
-            while (opts.Count > 0)
+            while (options.Count > 0)
             {
                 // choose color and remove from options and weights
-                int chosenIndex = wrs.Choose(wghts);
-                int chosen = opts[chosenIndex];
-                opts.RemoveAt(chosenIndex);
-                wghts.RemoveAt(chosenIndex);
+                int chosenIndex = wrs.Choose(weights);
+                int chosen = options[chosenIndex];
+                options.RemoveAt(chosenIndex);
+                weights.RemoveAt(chosenIndex);
 
                 graph.AssignValueToNode(collapsingNode, chosen);
 
@@ -134,6 +119,104 @@
             pq.Enqueue(collapsingNode, collapsingNodePriority);
             return null;
         }
+        /// <summary>
+        /// Solves the provided graph using a recursive approach and a priority queue.
+        /// </summary>
+        /// <param name="graph">The graph to be solved.</param>
+        /// <returns>
+        /// The solved graph if a solution is found; otherwise, <c>null</c>.
+        /// </returns>
+        /// <remarks>
+        /// This method initializes the node options of the graph based on the rule count from the solver rulebook,
+        /// sets up a priority queue, and then attempts to solve the graph recursively.
+        /// </remarks>
+        public Graph? Solve(Graph graph)
+        {
+            graph.InitializeNodeOptions(SolverRulebook.RuleCount);
+            return RecursiveSolve2(graph, SetUpPriorityQueue(graph), 0);
+        }
+        /// <summary>
+        /// Solves the provided graph using a recursive approach and a priority queue.
+        /// </summary>
+        /// <param name="graph">The graph to be solved.</param>
+        /// <param name="initialized">If true, skips the graph initialization.</param>
+        /// <returns>
+        /// The solved graph if a solution is found; otherwise, <c>null</c>.
+        /// </returns>
+        /// <remarks>
+        /// This method initializes the node options of the graph based on the rule count from the solver rulebook,
+        /// sets up a priority queue, and then attempts to solve the graph recursively.
+        /// </remarks>
+        public Graph? Solve(Graph graph, bool initialized = false)
+        {
+            if (!initialized)
+            {
+                graph.InitializeNodeOptions(SolverRulebook.RuleCount);
+            }
+            return RecursiveSolve2(graph, SetUpPriorityQueue(graph), 0);
+        }
+        /// <summary>
+        /// Solves the provided graph using a recursive approach and a priority queue considering given constraints.
+        /// </summary>
+        /// <param name="graph">The graph to be solved.</param>
+        /// <param name="constraints">Constraints to consider.</param>
+        /// <returns>
+        /// The solved graph if a solution is found; otherwise, <c>null</c>.
+        /// </returns>
+        /// <remarks>
+        /// This method initializes the node options of the graph based on the rule count from the solver rulebook,
+        /// applies constraints,
+        /// sets up a priority queue, and then attempts to solve the graph recursively.
+        /// </remarks>
+        public Graph? Solve(Graph graph, IEnumerable<ConstraintByNode> constraints)
+        {
+            graph.InitializeNodeOptions(SolverRulebook.RuleCount);
+
+            foreach (ConstraintByNode constraint in constraints)
+            {
+                try
+                {
+                    if (!TryForceValueToNodeWithUpdate(graph, constraint.Node, constraint.ForcedValue))
+                    {
+                        // something wrong with neighbor updates
+                        return null;
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    // user tried to assign value to an already set node
+                    return null;
+                }
+            }
+            return Solve(graph, initialized: true);
+        }
+        /// <summary>
+        /// Solves the provided graph using a recursive approach and a priority queue considering given constraints.
+        /// </summary>
+        /// <param name="graph">The graph to be solved.</param>
+        /// <param name="constraints">Constraints to consider.</param>
+        /// <returns>
+        /// The solved graph if a solution is found; otherwise, <c>null</c>.
+        /// </returns>
+        /// <remarks>
+        /// This method initializes the node options of the graph based on the rule count from the solver rulebook,
+        /// applies constraints,
+        /// sets up a priority queue, and then attempts to solve the graph recursively.
+        /// </remarks>
+        public Graph? Solve(Graph graph, IEnumerable<ConstraintById> constraints)
+        {
+            return Solve(graph, constraints.Select(constraint => (graph.AllNodes[constraint.NodeId], constraint.ForcedValue).ConstraintByNode()));
+        }
+        private bool TryForceValueToNodeWithUpdate(Graph graph, Node node, int chosen)
+        {
+            // used to force certain value to a node before looking for solution
+            // assign value
+            graph.AssignValueToNode(node, chosen);
+            // update
+            Rule ruleForChildren = SolverRulebook.GetRuleForChildren(chosen);
+            Rule ruleForParents = SolverRulebook.GetRuleForParents(chosen);
+            return node.TryUpdateNodeNeighbors(ruleForChildren, ruleForParents);
+        }
         private PriorityQueue.PrioritySet<Node, double> SetUpPriorityQueue(Graph graph)
         {
             PriorityQueue.PrioritySet<Node, double> pq = new();
@@ -146,58 +229,6 @@
                 }
             }
             return pq;
-        }
-
-        public Graph? Solve(Graph graph)
-        {
-            graph.InitializeNodeOptions(SolverRulebook.RuleCount);
-            return RecursiveSolve2(graph, SetUpPriorityQueue(graph), 0);
-        }
-        public Graph? Solve(Graph graph, bool initialized = false)
-        {
-            if (!initialized)
-            {
-                graph.InitializeNodeOptions(SolverRulebook.RuleCount);
-            }
-            return RecursiveSolve2(graph, SetUpPriorityQueue(graph), 0);
-        }
-        public Graph? Solve(Graph graph, IEnumerable<ConstraintByNode> constraints)
-        {
-            graph.InitializeNodeOptions(SolverRulebook.RuleCount);
-
-            foreach (ConstraintByNode constraint in constraints)
-            {
-                try
-                {
-                    if (!TryForceValueToNodeWithUpdate(graph, constraint.Node, constraint.ForcedValue))
-                    {
-                        // something wrong with neighbor updates
-                        Console.WriteLine("Unfeasible constraints");
-                        return null;
-                    }
-                }
-                catch (ArgumentException)
-                {
-                    // user tried to assign value to an already set node
-                    Console.WriteLine("Multiple assignments to one node");
-                    return null;
-                }
-            }
-            return Solve(graph, initialized: true);
-        }
-        public Graph? Solve(Graph graph, IEnumerable<ConstraintById> constraints)
-        {
-            return Solve(graph, constraints.Select(constraint => (graph.AllNodes[constraint.NodeId], constraint.ForcedValue).ConstraintByNode()));
-        }
-        public bool TryForceValueToNodeWithUpdate(Graph graph, Node node, int chosen)
-        {
-            // used to force certain value to a node before looking for solution
-            // assign value
-            graph.AssignValueToNode(node, chosen);
-            // update
-            Rule ruleForChildren = SolverRulebook.GetRuleForChildren(chosen);
-            Rule ruleForParents = SolverRulebook.GetRuleForParents(chosen);
-            return node.TryUpdateNodeNeighbors(ruleForChildren, ruleForParents);
         }
     }
 }
