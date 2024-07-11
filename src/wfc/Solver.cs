@@ -1,6 +1,6 @@
 ﻿namespace wfc
 {
-    public delegate double EvaluateNode(HashSet<int> nodeOptions, int[] globalWeights);
+    public delegate double EvaluateNode(IEnumerable<int> nodeOptions, IReadOnlyList<int> globalWeights);
     public class Solver : ISolver<Graph>
     {
         private readonly WeightedRandomSelector wrs;
