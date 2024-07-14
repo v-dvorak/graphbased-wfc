@@ -1,19 +1,20 @@
 ﻿using System.Drawing;
 using GBWFC.Graph;
+using GBWFC.Solver;
 namespace GBWFC.Modules
 {
     public class GridSolver : ISolver<int[,]>
     {
-        private readonly Solver solver;
+        private readonly WFCSolver solver;
         private readonly bool overlap;
         public GridSolver(int[] globalWeights, Rule[] rules, bool overlap = false)
         {
-            solver = new Solver(new Rulebook(rules), globalWeights);
+            solver = new WFCSolver(new Rulebook(rules), globalWeights);
             this.overlap = overlap;
         }
         public GridSolver(int[] globalWeights, Rulebook rulebook, bool overlap = false)
         {
-            solver = new Solver(rulebook, globalWeights);
+            solver = new WFCSolver(rulebook, globalWeights);
             this.overlap = overlap;
         }
         public int[,] Solve(int[,] grid)
