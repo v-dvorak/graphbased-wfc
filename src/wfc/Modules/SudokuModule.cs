@@ -1,20 +1,22 @@
 ﻿using Refit;
+using GBWFC.Graph;
+using GBWFC.Solver;
 
-namespace wfc.Examples
+namespace GBWFC.Modules
 {
     public class SudokuSolver : ISolver<Sudoku>
     {
-        private readonly Solver solver;
+        private readonly WFCSolver solver;
         public SudokuSolver()
         {
-            solver = new Solver(
+            solver = new WFCSolver(
                 new Rulebook(Rulebook.CreateColoringRules(9))
                 );
         }
         public Sudoku Solve(Sudoku problem)
         {
-            Graph g = new Graph(SudokuModule.GetSudokuEdges(), GraphDirectedness.Undirected);
-            Graph result = solver.Solve(g, SudokuModule.GetSetCells(problem));
+            Graph.WFCGraph g = new Graph.WFCGraph(SudokuModule.GetSudokuEdges(), GraphDirectedness.Undirected);
+            Graph.WFCGraph result = solver.Solve(g, SudokuModule.GetSetCells(problem));
             Sudoku output = new();
             for (int i = 0; i < 9; i++)
             {

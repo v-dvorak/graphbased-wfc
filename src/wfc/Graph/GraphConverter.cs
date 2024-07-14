@@ -1,10 +1,10 @@
 ﻿using QuikGraph;
 
-namespace wfc
+namespace GBWFC.Graph
 {
     public class GraphConverter
     {
-        public static (Graph, Dictionary<TVertex, Node>) ProcessGraph<TVertex, TEdge>(IEdgeListGraph<TVertex, TEdge> graph)
+        public static (WFCGraph, Dictionary<TVertex, Node>) ProcessGraph<TVertex, TEdge>(IEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
             where TVertex : notnull
         {
@@ -30,7 +30,7 @@ namespace wfc
                 parentNode.Children.Add(childNode);
                 childNode.Parents.Add(parentNode);
             }
-            return (new Graph(allNodes.ToArray()), nodeMapping);
+            return (new WFCGraph(allNodes.ToArray()), nodeMapping);
         }
     }
 }

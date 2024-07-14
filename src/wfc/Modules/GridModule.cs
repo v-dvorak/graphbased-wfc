@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
-namespace wfc.Examples
+using GBWFC.Graph;
+namespace GBWFC.Modules
 {
     public class GridSolver : ISolver<int[,]>
     {
@@ -21,8 +22,8 @@ namespace wfc.Examples
             int width = grid.GetLength(1);
 
             List<Edge> edges = GridModule.GetGridEdges(height, width, overlap);
-            Graph graph = new Graph(edges, GraphDirectedness.Undirected);
-            Graph result = solver.Solve(graph);
+            Graph.WFCGraph graph = new Graph.WFCGraph(edges, GraphDirectedness.Undirected);
+            Graph.WFCGraph result = solver.Solve(graph);
             return GridModule.GraphToGrid(result, new int[height, width]);
         }
     }
@@ -77,7 +78,7 @@ namespace wfc.Examples
         /// <param name="graph">Solved <c>Graph</c>.</param>
         /// <param name="input">Grid to output to, used to get grid dimensions.</param>
         /// <returns></returns>
-        public static int[,] GraphToGrid(Graph graph, int[,] input)
+        public static int[,] GraphToGrid(Graph.WFCGraph graph, int[,] input)
         {
             return GraphToGrid(graph, input.GetLength(0), input.GetLength(1));
         }
@@ -88,7 +89,7 @@ namespace wfc.Examples
         /// <param name="height">Output grid height.</param>
         /// <param name="width">Output grid width.</param>
         /// <returns></returns>
-        public static int[,] GraphToGrid(Graph graph, int height, int width)
+        public static int[,] GraphToGrid(Graph.WFCGraph graph, int height, int width)
         {
             int[,] output = new int[height, width];
             for (int i = 0; i < width; i++)

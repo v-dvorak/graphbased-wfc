@@ -1,9 +1,10 @@
 ﻿using DotNetGraph.Compilation;
 using DotNetGraph.Core;
 using DotNetGraph.Extensions;
-using wfc.Examples;
+using GBWFC.Graph;
+using GBWFC.Modules;
 
-namespace wfc.Examples
+namespace GBWFC.Modules
 {
     class GraphModule
     {
@@ -20,7 +21,7 @@ namespace wfc.Examples
         /// this leads to doubling of edges in generated graph.</param>
         /// <returns><c>DotGraph</c>.</returns>
         public static DotGraph ConvertGraphToDotGraph(
-            Graph graph,
+            Graph.WFCGraph graph,
             string graphIdentifier = "Graph",
             string[]? colors = null,
             Action<DotGraph>? graphConfig = null,
@@ -73,7 +74,7 @@ namespace wfc.Examples
         /// </summary>
         /// <param name="graph"></param>
         public static void CreateImage(
-            Graph graph,
+            Graph.WFCGraph graph,
             string outputImagePath,
             string graphVizLibraryPath,
             GraphVizEngine engine = GraphVizEngine.dot

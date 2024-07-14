@@ -1,58 +1,16 @@
-﻿namespace wfc
+﻿using GBWFC.Solver;
+
+namespace GBWFC.Graph
 {
-    public struct Edge
-    {
-        public int Parent;
-        public int Child;
-        public Edge(int parent, int child)
-        {
-            Parent = parent;
-            Child = child;
-        }
-        public Edge((int, int) edge)
-        {
-            Parent = edge.Item1;
-            Child = edge.Item2;
-        }
-    }
-    public struct ConstraintById
-    {
-        public int NodeId;
-        public int ForcedValue;
-        public ConstraintById(int nodeId, int forceValue)
-        {
-            NodeId = nodeId;
-            ForcedValue = forceValue;
-        }
-        public ConstraintById((int, int) constraint)
-        {
-            NodeId = constraint.Item1;
-            ForcedValue = constraint.Item2;
-        }
-    }
-    public struct ConstraintByNode
-    {
-        public Node Node;
-        public int ForcedValue;
-        public ConstraintByNode(Node node, int forcedValue)
-        {
-            Node = node;
-            ForcedValue = forcedValue;
-        }
-        public ConstraintByNode((Node, int) constraint)
-        {
-            Node = constraint.Item1;
-            ForcedValue = constraint.Item2;
-        }
-    }
+
     public enum GraphDirectedness { Undirected, Directed };
-    public class Graph
+    public class WFCGraph
     {
         public Node[] AllNodes;
         public int TotalOptions;
         private int totalAssigned = 0;
         public bool AllSet { get => AllNodes.Length <= totalAssigned; }
-        public Graph(Node[] nodes, int totalOptions = -1)
+        public WFCGraph(Node[] nodes, int totalOptions = -1)
         {
             AllNodes = nodes;
             TotalOptions = totalOptions;
@@ -62,7 +20,7 @@
                 InitializeNodeOptions(totalOptions);
             }
         }
-        public Graph(IReadOnlyList<Edge> edges, GraphDirectedness direct = GraphDirectedness.Directed, int options = -1)
+        public WFCGraph(IReadOnlyList<Edge> edges, GraphDirectedness direct = GraphDirectedness.Directed, int options = -1)
         {
             TotalOptions = options;
             totalAssigned = 0;
@@ -113,7 +71,7 @@
         {
             totalAssigned = total;
         }
-        public Graph Copy()
+        public WFCGraph Copy()
         {
             // initialize all nodes
             Node[] newNodes = new Node[AllNodes.Length];
@@ -141,7 +99,7 @@
                     newNodes[i].AddParent(newNodes[parent.Id]);
                 }
             }
-            Graph g = new Graph(newNodes, TotalOptions);
+            WFCGraph g = new WFCGraph(newNodes, TotalOptions);
             g.SetTotalAssigned(totalAssigned);
             return g;
         }
@@ -168,7 +126,7 @@
             }
         }
         /// <summary>
-        /// Resets single node's <see cref="Node.AssignedValue"/> and account for it in <see cref="Graph.totalAssigned"/>.
+        /// Resets single node's <see cref="Node.AssignedValue"/> and account for it in <see cref="totalAssigned"/>.
         /// Throws an exception if given node does not have a value assigned.
         /// </summary>
         /// <param name="node">Node whose value will be reset.</param>

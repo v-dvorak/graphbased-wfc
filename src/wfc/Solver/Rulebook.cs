@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace wfc
+namespace GBWFC.Solver
 {
     public record struct Rule(int Item, int[] Options)
     {

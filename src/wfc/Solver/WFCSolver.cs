@@ -1,26 +1,29 @@
-﻿namespace wfc
+﻿using GBWFC.Graph;
+using GBWFC.Entropy;
+
+namespace GBWFC.Solver
 {
-    public class Solver : ISolver<Graph>
+    public class WFCSolver : ISolver<WFCGraph>
     {
         private readonly WeightedRandomSelector wrs;
         private readonly EvaluateNode evaluateNode;
         public Rulebook SolverRulebook { get; private set; }
         private readonly int[] globalWeights;
-        public Solver(Rulebook rulebook, int[] globalWeights, EvaluateNode? evaluateNode = null)
+        public WFCSolver(Rulebook rulebook, int[] globalWeights, EvaluateNode? evaluateNode = null)
         {
             if (evaluateNode is null)
             {
-                this.evaluateNode = Entropy.Shannon;
+                this.evaluateNode = WFCEntropy.Shannon;
             }
             wrs = new WeightedRandomSelector();
             SolverRulebook = rulebook;
             this.globalWeights = globalWeights;
         }
-        public Solver(Rulebook rulebook, EvaluateNode? evaluateNode = null)
+        public WFCSolver(Rulebook rulebook, EvaluateNode? evaluateNode = null)
         {
             if (evaluateNode is null)
             {
-                this.evaluateNode = Entropy.Shannon;
+                this.evaluateNode = WFCEntropy.Shannon;
             }
             wrs = new WeightedRandomSelector();
             SolverRulebook = rulebook;
@@ -30,10 +33,10 @@
         /// Main solver method, takes in initialized graph and tries to solve it with rules given by the Solver itself.
         /// </summary>
         /// <param name="graph"><see cref="Graph"/> to solve.</param>
-        /// <param name="pq"><see cref="PriorityQueue.PrioritySet{TElement, TPriority}"/></param>
+        /// <param name="pq"><see cref="WFCSolver.PrioritySet{TElement, TPriority}"/></param>
         /// <param name="depth">Debug param, recursion depth.</param>
         /// <returns>Graph with all values set, null if the graph can't be solved according to rules.</returns>
-        private Graph? RecursiveSolve2(Graph graph, PriorityQueue.PrioritySet<Node, double> pq, int depth)
+        private WFCGraph? RecursiveSolve2(WFCGraph graph, PriorityQueue.PrioritySet<Node, double> pq, int depth)
         {
             // get node to collapse
             Node collapsingNode;
@@ -84,7 +87,7 @@
                         return graph;
                     }
                     // recursion
-                    Graph? result = RecursiveSolve2(graph, pq, depth + 1);
+                    WFCGraph? result = RecursiveSolve2(graph, pq, depth + 1);
                     if (result is not null)
                     {
                         return result;
@@ -130,7 +133,7 @@
         /// This method initializes the node options of the graph based on the rule count from the solver rulebook,
         /// sets up a priority queue, and then attempts to solve the graph recursively.
         /// </remarks>
-        public Graph? Solve(Graph graph)
+        public WFCGraph? Solve(WFCGraph graph)
         {
             graph.InitializeNodeOptions(SolverRulebook.RuleCount);
             return RecursiveSolve2(graph, SetUpPriorityQueue(graph), 0);
@@ -147,7 +150,7 @@
         /// This method initializes the node options of the graph based on the rule count from the solver rulebook,
         /// sets up a priority queue, and then attempts to solve the graph recursively.
         /// </remarks>
-        public Graph? Solve(Graph graph, bool initialized = false)
+        public WFCGraph? Solve(WFCGraph graph, bool initialized = false)
         {
             if (!initialized)
             {
@@ -168,7 +171,7 @@
         /// applies constraints,
         /// sets up a priority queue, and then attempts to solve the graph recursively.
         /// </remarks>
-        public Graph? Solve(Graph graph, IEnumerable<ConstraintByNode> constraints)
+        public WFCGraph? Solve(WFCGraph graph, IEnumerable<ConstraintByNode> constraints)
         {
             graph.InitializeNodeOptions(SolverRulebook.RuleCount);
 
@@ -203,11 +206,11 @@
         /// applies constraints,
         /// sets up a priority queue, and then attempts to solve the graph recursively.
         /// </remarks>
-        public Graph? Solve(Graph graph, IEnumerable<ConstraintById> constraints)
+        public WFCGraph? Solve(WFCGraph graph, IEnumerable<ConstraintById> constraints)
         {
             return Solve(graph, constraints.Select(constraint => (graph.AllNodes[constraint.NodeId], constraint.ForcedValue).ConstraintByNode()));
         }
-        private bool TryForceValueToNodeWithUpdate(Graph graph, Node node, int chosen)
+        private bool TryForceValueToNodeWithUpdate(WFCGraph graph, Node node, int chosen)
         {
             // used to force certain value to a node before looking for solution
             // assign value
@@ -217,7 +220,7 @@
             Rule ruleForParents = SolverRulebook.GetRuleForParents(chosen);
             return node.TryUpdateNodeNeighbors(ruleForChildren, ruleForParents);
         }
-        private PriorityQueue.PrioritySet<Node, double> SetUpPriorityQueue(Graph graph)
+        private PriorityQueue.PrioritySet<Node, double> SetUpPriorityQueue(WFCGraph graph)
         {
             PriorityQueue.PrioritySet<Node, double> pq = new();
             foreach (Node node in graph.AllNodes)

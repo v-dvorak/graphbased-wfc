@@ -1,4 +1,4 @@
-﻿namespace wfc
+﻿namespace GBWFC.Solver
 {
     /// <summary>
     /// GBWFC wrapper for specific task.

@@ -1,11 +1,13 @@
-using wfc;
-using wfc.Examples;
+using GBWFC.Graph;
+using GBWFC.Modules;
+using GBWFC.Solver;
+
 namespace WFCTests
 {
     [TestClass]
     public class GraphColoringTests
     {
-        public bool GraphEquality(Graph graph, int[] coloring)
+        public bool GraphEquality(WFCGraph graph, int[] coloring)
         {
             for (int i = 0; i < graph.AllNodes.Length; i++)
             {
@@ -31,12 +33,12 @@ namespace WFCTests
                 (3,0).Edge(),
                 ];
             int[] globalWeights = [1, 1];
-            Graph g = new Graph(edges);
+            WFCGraph g = new WFCGraph(edges);
             Rulebook rb = new Rulebook(rules);
-            Solver sl = new Solver(rb, globalWeights);
+            WFCSolver sl = new WFCSolver(rb, globalWeights);
 
             // Act
-            Graph result = sl.Solve(g);
+            WFCGraph result = sl.Solve(g);
 
             // Assert
             Assert.IsTrue(result is not null &&
@@ -58,12 +60,12 @@ namespace WFCTests
                 (3,0).Edge(),
                 ];
             int[] globalWeights = [1, 1];
-            Graph g = new Graph(edges);
+            WFCGraph g = new WFCGraph(edges);
             Rulebook rb = new Rulebook(rules);
-            Solver sl = new Solver(rb, globalWeights);
+            WFCSolver sl = new WFCSolver(rb, globalWeights);
 
             // Act
-            Graph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode()]);
+            WFCGraph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode()]);
 
             // Assert
             Assert.IsTrue(result is not null &&
@@ -85,12 +87,12 @@ namespace WFCTests
                 (3,0).Edge(),
                 ];
             int[] globalWeights = [1, 1];
-            Graph g = new Graph(edges);
+            WFCGraph g = new WFCGraph(edges);
             Rulebook rb = new Rulebook(rules);
-            Solver sl = new Solver(rb, globalWeights);
+            WFCSolver sl = new WFCSolver(rb, globalWeights);
 
             // Act
-            Graph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode(), (g.AllNodes[1], 0).ConstraintByNode()]);
+            WFCGraph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode(), (g.AllNodes[1], 0).ConstraintByNode()]);
 
             // Assert
             Assert.IsTrue(result is null);
@@ -110,12 +112,12 @@ namespace WFCTests
                 (3,0).Edge(),
                 ];
             int[] globalWeights = [1, 1];
-            Graph g = new Graph(edges);
+            WFCGraph g = new WFCGraph(edges);
             Rulebook rb = new Rulebook(rules);
-            Solver sl = new Solver(rb, globalWeights);
+            WFCSolver sl = new WFCSolver(rb, globalWeights);
 
             // Act
-            Graph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode(), (g.AllNodes[0], 0).ConstraintByNode()]);
+            WFCGraph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode(), (g.AllNodes[0], 0).ConstraintByNode()]);
 
             // Assert
             Assert.IsTrue(result is null);
@@ -412,6 +414,5 @@ namespace WFCTests
             // Arrange
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
-
     }
 }

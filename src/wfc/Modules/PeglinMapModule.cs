@@ -1,4 +1,6 @@
-﻿namespace wfc.Examples
+﻿using GBWFC.Graph;
+
+namespace GBWFC.Modules
 {
     public static class PeglinMapModule
     {
@@ -8,9 +10,9 @@
         /// <param name="map">List of map levels.</param>
         /// <param name="totalOptions">Number of cell types.</param>
         /// <returns></returns>
-        public static Graph MapToGraph(IReadOnlyList<int[]> map, int totalOptions)
+        public static Graph.WFCGraph MapToGraph(IReadOnlyList<int[]> map, int totalOptions)
         {
-            return new Graph(GetEdges(map));
+            return new Graph.WFCGraph(GetEdges(map));
         }
         /// <summary>
         /// Given height and width generates Peglin Map.

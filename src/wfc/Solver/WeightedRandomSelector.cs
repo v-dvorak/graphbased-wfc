@@ -1,4 +1,4 @@
-﻿namespace wfc
+﻿namespace GBWFC.Solver
 {
     public class WeightedRandomSelector
     {

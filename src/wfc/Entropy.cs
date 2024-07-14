@@ -1,4 +1,4 @@
-﻿namespace wfc
+﻿namespace GBWFC.Entropy
 {
     /// <summary>
     /// Represents a method that evaluates a node based on its options and global weights.
@@ -13,7 +13,7 @@
     /// <summary>
     /// Contains all implemented methods for node entropy evaluation and some helper methods.
     /// </summary>
-    public static class Entropy
+    public static class WFCEntropy
     {
         /// <summary>
         /// Returns the Shannon Entropy based on given weights.
