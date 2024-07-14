@@ -22,7 +22,6 @@ namespace wfc
             }
 
             // Establish parent-child relationships based on the edges in the graph
-
             foreach (var edge in graph.Edges)
             {
                 Node parentNode = nodeMapping[edge.Source];
@@ -31,28 +30,7 @@ namespace wfc
                 parentNode.Children.Add(childNode);
                 childNode.Parents.Add(parentNode);
             }
-
             return (new Graph(allNodes.ToArray()), nodeMapping);
-        }
-
-        public static void AMogus()
-        {
-            var directedGraph = new AdjacencyGraph<int, Edge<int>>();
-            directedGraph.AddVertexRange(new[] { 1, 2, 3, 4 });
-            directedGraph.AddEdge(new Edge<int>(1, 2));
-            directedGraph.AddEdge(new Edge<int>(1, 3));
-            directedGraph.AddEdge(new Edge<int>(2, 4));
-            directedGraph.AddEdge(new Edge<int>(3, 4));
-
-            Graph g = ProcessGraph(directedGraph).Item1;
-
-            foreach (Node node in ProcessGraph(directedGraph).Item1.AllNodes)
-            {
-                foreach (Node child in node.Children)
-                {
-                    Console.WriteLine($"{node.Id} -> {child.Id}");
-                }
-            }
         }
     }
 }
