@@ -127,6 +127,14 @@ namespace wfc.Examples
                 CreateNoWindow = true
             }).WaitForExit();
         }
+        /// <summary>
+        /// Opens given image inside an image explorer. Only tested for Windows.
+        /// </summary>
+        /// <param name="imagePath">Path to image to show.</param>
+        public static void OpenImage(string imagePath)
+        {
+            System.Diagnostics.Process.Start("explorer.exe", imagePath).WaitForExit();
+        }
     }
 
 }

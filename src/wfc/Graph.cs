@@ -52,15 +52,20 @@
         public int TotalOptions;
         private int totalAssigned = 0;
         public bool AllSet { get => AllNodes.Length <= totalAssigned; }
-        public Graph(Node[] nodes, int totalOptions)
+        public Graph(Node[] nodes, int totalOptions = -1)
         {
             AllNodes = nodes;
             TotalOptions = totalOptions;
             totalAssigned = 0;
+            if (totalOptions != -1)
+            {
+                InitializeNodeOptions(totalOptions);
+            }
         }
         public Graph(IReadOnlyList<Edge> edges, GraphDirectedness direct = GraphDirectedness.Directed, int options = -1)
         {
             TotalOptions = options;
+            totalAssigned = 0;
             // Determine unique node IDs from edges
             HashSet<int> nodeIds = new HashSet<int>();
             foreach (var edge in edges)
