@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GridShowcase", "GridShowcas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphColoringShowcase", "GraphColoringShowcase\GraphColoringShowcase.csproj", "{53E50F35-11F2-43A1-A1B6-670598FCA5D2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapShowcase", "MapShowcase\MapShowcase.csproj", "{4A3AB511-0CC2-4460-9DA6-9F8894619880}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{53E50F35-11F2-43A1-A1B6-670598FCA5D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53E50F35-11F2-43A1-A1B6-670598FCA5D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53E50F35-11F2-43A1-A1B6-670598FCA5D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A3AB511-0CC2-4460-9DA6-9F8894619880}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A3AB511-0CC2-4460-9DA6-9F8894619880}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A3AB511-0CC2-4460-9DA6-9F8894619880}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A3AB511-0CC2-4460-9DA6-9F8894619880}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
