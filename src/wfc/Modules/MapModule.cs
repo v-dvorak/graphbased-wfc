@@ -2,7 +2,7 @@
 
 namespace GBWFC.Modules
 {
-    public static class PeglinMapModule
+    public static class MapModule
     {
         /// <summary>
         /// Converts Map to <c>Graph</c>.
