@@ -51,7 +51,7 @@ namespace WFCTests
             Sudoku result = solver.Solve(problem);
 
             // Arrange
-            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsValidSudoku(result.Board));
         }
         [TestMethod]
         public void Sudoku_CorrectSolution_1()
@@ -75,7 +75,7 @@ namespace WFCTests
             Sudoku result = solver.Solve(problem);
 
             // Arrange
-            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsValidSudoku(result.Board));
         }
         [TestMethod]
         public void Sudoku_CorrectSolution_2()
@@ -99,7 +99,7 @@ namespace WFCTests
             Sudoku result = solver.Solve(problem);
 
             // Arrange
-            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsValidSudoku(result.Board));
         }
         [TestMethod]
         public void Sudoku_CorrectSolution_3()
@@ -123,7 +123,7 @@ namespace WFCTests
             Sudoku result = solver.Solve(problem);
 
             // Arrange
-            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsValidSudoku(result.Board));
         }
         [TestMethod]
         public void Sudoku_CorrectSolution_4()
@@ -147,7 +147,7 @@ namespace WFCTests
             Sudoku result = solver.Solve(problem);
 
             // Arrange
-            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsValidSudoku(result.Board));
         }
         [TestMethod]
         public void Sudoku_CorrectSolution_5()
@@ -171,7 +171,7 @@ namespace WFCTests
             Sudoku result = solver.Solve(problem);
 
             // Arrange
-            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsValidSudoku(result.Board));
         }
         [TestMethod]
         public void Sudoku_CorrectSolution_6()
@@ -195,7 +195,7 @@ namespace WFCTests
             Sudoku result = solver.Solve(problem);
 
             // Arrange
-            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsValidSudoku(result.Board));
         }
         [TestMethod]
         public void Sudoku_CorrectSolution_7()
@@ -219,7 +219,7 @@ namespace WFCTests
             Sudoku result = solver.Solve(problem);
 
             // Arrange
-            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsValidSudoku(result.Board));
         }
         [TestMethod]
         public void Sudoku_CorrectSolution_8()
@@ -243,7 +243,7 @@ namespace WFCTests
             Sudoku result = solver.Solve(problem);
 
             // Arrange
-            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsValidSudoku(result.Board));
         }
         [TestMethod]
         public void Sudoku_CorrectSolution_9()
@@ -267,7 +267,7 @@ namespace WFCTests
             Sudoku result = solver.Solve(problem);
 
             // Arrange
-            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsValidSudoku(result.Board));
         }
         [TestMethod]
         public void Sudoku_CorrectSolution_10()
@@ -291,7 +291,7 @@ namespace WFCTests
             Sudoku result = solver.Solve(problem);
 
             // Arrange
-            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
+            Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsValidSudoku(result.Board));
         }
     }
 

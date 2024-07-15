@@ -254,9 +254,13 @@ namespace GBWFC.Modules
         /// </summary>
         /// <param name="board">Proposed solution.</param>
         /// <returns></returns>
-        public static bool IsSudokuValid(int[,] board)
+        public static bool IsValidSudoku(int[,] board)
         {
             return CheckRows(board) && CheckColumns(board) && CheckSubGrids(board);
+        }
+        public static bool IsValidSudoku(Sudoku sudoku)
+        {
+            return IsValidSudoku(sudoku.Board);
         }
         private static bool CheckRows(int[,] board)
         {
