@@ -229,6 +229,19 @@
 
             return edges;
         }
+        
+        public List<Edge> GetEdges()
+        {
+            List<Edge> edges = new();
+            foreach (Node parent in AllNodes)
+            {
+                foreach (Node child in parent.Children)
+                {
+                    edges.Add((parent.Id, child.Id).Edge());
+                }
+            }
+            return edges;
+        }
         /// <summary>
         /// Collects all assigned values into a <see cref="List{int}"/>.
         /// </summary>

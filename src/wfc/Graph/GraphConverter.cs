@@ -29,6 +29,11 @@ namespace GBWFC.Graph
 
                 parentNode.Children.Add(childNode);
                 childNode.Parents.Add(parentNode);
+                if (!graph.IsDirected)
+                {
+                    parentNode.Parents.Add(childNode);
+                    childNode.Children.Add(parentNode);
+                }
             }
             return (new WFCGraph(allNodes.ToArray()), nodeMapping);
         }
