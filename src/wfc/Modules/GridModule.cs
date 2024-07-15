@@ -22,9 +22,17 @@ namespace GBWFC.Modules
             int height = grid.GetLength(0);
             int width = grid.GetLength(1);
 
+            return Solve(height, width);
+        }
+        public int[,] Solve(Size size)
+        {
+            return Solve(size.Height, size.Width);
+        } 
+        public int[,] Solve(int height, int width)
+        {
             List<Edge> edges = GridModule.GetGridEdges(height, width, overlap);
-            Graph.WFCGraph graph = new Graph.WFCGraph(edges, GraphDirectedness.Undirected);
-            Graph.WFCGraph result = solver.Solve(graph);
+            WFCGraph graph = new WFCGraph(edges, GraphDirectedness.Undirected);
+            WFCGraph result = solver.Solve(graph);
             return GridModule.GraphToGrid(result, new int[height, width]);
         }
     }

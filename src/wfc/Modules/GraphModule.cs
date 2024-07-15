@@ -3,6 +3,7 @@ using DotNetGraph.Core;
 using DotNetGraph.Extensions;
 using GBWFC.Graph;
 using GBWFC.Modules;
+using System.Text;
 
 namespace GBWFC.Modules
 {
@@ -21,8 +22,8 @@ namespace GBWFC.Modules
         /// this leads to doubling of edges in generated graph.</param>
         /// <returns><c>DotGraph</c>.</returns>
         public static DotGraph ConvertGraphToDotGraph(
-            Graph.WFCGraph graph,
-            string graphIdentifier = "Graph",
+            WFCGraph graph,
+            string graphIdentifier = "Graf",
             string[]? colors = null,
             Action<DotGraph>? graphConfig = null,
             Action<DotNode>? nodeConfig = null,
@@ -98,7 +99,8 @@ namespace GBWFC.Modules
             var result = writer.GetStringBuilder().ToString();
 
             // Save it to a file
-            File.WriteAllText("graph.dot", result);
+            Encoding utf8WithoutBom = new UTF8Encoding(false);
+            File.WriteAllText("graph.dot", result, utf8WithoutBom);
 
             GenerateImageFromDot("graph.dot", outputImagePath, graphVizLibraryPath, engine);
         }
@@ -117,8 +119,8 @@ namespace GBWFC.Modules
             )
         {
             string engineName = Enum.GetName(typeof(GraphVizEngine), engine);
-            Console.WriteLine($"Saving to {outputImagePath}");
-            var command = $"{graphVizLibraryPath}\\{engineName}dot.exe -Tpng \"{dotFilePath}\" -o \"{outputImagePath}\"";
+            Console.WriteLine($"Saving to \"{outputImagePath}\"");
+            var command = $"{graphVizLibraryPath}/{engineName}.exe -Tpng \"{dotFilePath}\" -o \"{outputImagePath}\"";
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
                 FileName = "cmd.exe",

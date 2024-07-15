@@ -11,6 +11,20 @@
             }
             Console.WriteLine();
         }
+        public static void Print<T>(this T[,] grid)
+        {
+            int height = grid.GetLength(0);
+            int width = grid.GetLength(1);
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    Console.Write(grid[i, j]);
+                    Console.Write(" ");
+                }
+                Console.WriteLine();
+            }
+        }
         /// <summary>
         /// Fills an array with ones.
         /// </summary>
