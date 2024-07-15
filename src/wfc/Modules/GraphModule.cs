@@ -6,7 +6,7 @@ using GBWFC.Modules;
 
 namespace GBWFC.Modules
 {
-    class GraphModule
+    public class GraphModule
     {
         /// <summary>
         /// Takes a graph in <c>Graph</c> format and turns int into a <c>DotGraph</c>.
