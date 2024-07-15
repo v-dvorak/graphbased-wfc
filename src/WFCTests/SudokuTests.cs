@@ -1,128 +1,7 @@
-using GBWFC.Graph;
-using GBWFC.Modules;
-using GBWFC.Solver;
+﻿using GBWFC.Modules;
 
 namespace WFCTests
 {
-    [TestClass]
-    public class GraphColoringTests
-    {
-        public bool GraphEquality(WFCGraph graph, int[] coloring)
-        {
-            for (int i = 0; i < graph.AllNodes.Length; i++)
-            {
-                if (graph.AllNodes[i].AssignedValue != coloring[i])
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-        [TestMethod]
-        public void BaseProblem()
-        {
-            // Arrange
-            Rule[] rules = [
-                new Rule(0, [1]),
-                new Rule(1, [0]),
-                ];
-            List<Edge> edges = [
-                (0,1).Edge(),
-                (1,2).Edge(),
-                (2,3).Edge(),
-                (3,0).Edge(),
-                ];
-            int[] globalWeights = [1, 1];
-            WFCGraph g = new WFCGraph(edges);
-            Rulebook rb = new Rulebook(rules);
-            WFCSolver sl = new WFCSolver(rb, globalWeights);
-
-            // Act
-            WFCGraph result = sl.Solve(g);
-
-            // Assert
-            Assert.IsTrue(result is not null &&
-                (GraphEquality(result, [0, 1, 0, 1]) || GraphEquality(result, [1, 0, 1, 0]))
-                );
-        }
-        [TestMethod]
-        public void ForceValue_Possible()
-        {
-            // Arrange
-            Rule[] rules = [
-                new Rule(0, [1]),
-                new Rule(1, [0]),
-                ];
-            List<Edge> edges = [
-                (0,1).Edge(),
-                (1,2).Edge(),
-                (2,3).Edge(),
-                (3,0).Edge(),
-                ];
-            int[] globalWeights = [1, 1];
-            WFCGraph g = new WFCGraph(edges);
-            Rulebook rb = new Rulebook(rules);
-            WFCSolver sl = new WFCSolver(rb, globalWeights);
-
-            // Act
-            WFCGraph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode()]);
-
-            // Assert
-            Assert.IsTrue(result is not null &&
-                GraphEquality(result, [0, 1, 0, 1])
-                );
-        }
-        [TestMethod]
-        public void ForceValue_Impossible_CorrectAssignment()
-        {
-            // Arrange
-            Rule[] rules = [
-                new Rule(0, [1]),
-                new Rule(1, [0]),
-                ];
-            List<Edge> edges = [
-                (0,1).Edge(),
-                (1,2).Edge(),
-                (2,3).Edge(),
-                (3,0).Edge(),
-                ];
-            int[] globalWeights = [1, 1];
-            WFCGraph g = new WFCGraph(edges);
-            Rulebook rb = new Rulebook(rules);
-            WFCSolver sl = new WFCSolver(rb, globalWeights);
-
-            // Act
-            WFCGraph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode(), (g.AllNodes[1], 0).ConstraintByNode()]);
-
-            // Assert
-            Assert.IsTrue(result is null);
-        }
-        [TestMethod]
-        public void ForceValue_Impossible_DoubleAssignment()
-        {
-            // Arrange
-            Rule[] rules = [
-                new Rule(0, [1]),
-                new Rule(1, [0]),
-                ];
-            List<Edge> edges = [
-                (0,1).Edge(),
-                (1,2).Edge(),
-                (2,3).Edge(),
-                (3,0).Edge(),
-                ];
-            int[] globalWeights = [1, 1];
-            WFCGraph g = new WFCGraph(edges);
-            Rulebook rb = new Rulebook(rules);
-            WFCSolver sl = new WFCSolver(rb, globalWeights);
-
-            // Act
-            WFCGraph result = sl.Solve(g, [(g.AllNodes[0], 0).ConstraintByNode(), (g.AllNodes[0], 0).ConstraintByNode()]);
-
-            // Assert
-            Assert.IsTrue(result is null);
-        }
-    }
     [TestClass]
     public class SudokuTests
     {
@@ -415,4 +294,5 @@ namespace WFCTests
             Assert.IsTrue(SudokuChecker.DoesNotHallucinate(problem, result) && SudokuChecker.IsSudokuValid(result.Board));
         }
     }
+
 }

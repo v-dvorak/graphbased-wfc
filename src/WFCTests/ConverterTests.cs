@@ -1,6 +1,6 @@
-﻿using QuikGraph;
-using GBWFC.Graph;
-using GBWFC.Modules;
+﻿using GBWFC.Graph;
+using QuikGraph;
+
 namespace WFCTests
 {
     [TestClass]
