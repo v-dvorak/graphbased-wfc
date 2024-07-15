@@ -9,26 +9,29 @@ namespace GBWFC.Solver
         private readonly EvaluateNode evaluateNode;
         public Rulebook SolverRulebook { get; private set; }
         private readonly int[] globalWeights;
-        public WFCSolver(Rulebook rulebook, int[] globalWeights, EvaluateNode? evaluateNode = null)
+        public WFCSolver(Rulebook rulebook, int[]? globalWeights = null, EvaluateNode? evaluateNode = null)
         {
+            wrs = new WeightedRandomSelector();
+            SolverRulebook = rulebook;
             if (evaluateNode is null)
             {
                 this.evaluateNode = WFCEntropy.Shannon;
             }
-            wrs = new WeightedRandomSelector();
-            SolverRulebook = rulebook;
-            this.globalWeights = globalWeights;
-        }
-        public WFCSolver(Rulebook rulebook, EvaluateNode? evaluateNode = null)
-        {
-            if (evaluateNode is null)
+            else
             {
-                this.evaluateNode = WFCEntropy.Shannon;
+                this.evaluateNode = evaluateNode;
             }
-            wrs = new WeightedRandomSelector();
-            SolverRulebook = rulebook;
-            globalWeights = new int[SolverRulebook.RuleCount].Ones();
+            if (globalWeights is null)
+            {
+                this.globalWeights = new int[SolverRulebook.RuleCount].Ones();
+            }
+            else
+            {
+                this.globalWeights = globalWeights;
+            }
         }
+        public WFCSolver(Rule[] rules, int[]? globalWeights = null, EvaluateNode? evaluateNode = null)
+            : this(new Rulebook(rules), globalWeights, evaluateNode) { }
         /// <summary>
         /// Main solver method, takes in initialized graph and tries to solve it with rules given by the Solver itself.
         /// </summary>
