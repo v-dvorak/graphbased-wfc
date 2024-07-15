@@ -7,7 +7,7 @@ namespace WFCTests
     public class GraphColoringTests
     {
         [TestMethod]
-        public void BaseProblem()
+        public void BaseProblem_Undirected()
         {
             // Arrange
             Rule[] rules = [
@@ -21,7 +21,35 @@ namespace WFCTests
                 (3,0).Edge(),
                 ];
             int[] globalWeights = [1, 1];
-            WFCGraph g = new WFCGraph(edges);
+            WFCGraph g = new WFCGraph(edges, GraphDirectedness.Undirected);
+            Rulebook rb = new Rulebook(rules);
+            WFCSolver sl = new WFCSolver(rb, globalWeights);
+
+            // Act
+            WFCGraph result = sl.Solve(g);
+
+            // Assert
+            Assert.IsTrue(
+                result is not null &&
+                (result.ToList().SequenceEqual([0, 1, 0, 1]) || result.ToList().SequenceEqual([1, 0, 1, 0]))
+                );
+        }
+        [TestMethod]
+        public void BaseProblem_Directed()
+        {
+            // Arrange
+            Rule[] rules = [
+                new Rule(0, [1]),
+                new Rule(1, [0]),
+                ];
+            List<Edge> edges = [
+                (0,1).Edge(),
+                (1,2).Edge(),
+                (2,3).Edge(),
+                (3,0).Edge(),
+                ];
+            int[] globalWeights = [1, 1];
+            WFCGraph g = new WFCGraph(edges, GraphDirectedness.Directed);
             Rulebook rb = new Rulebook(rules);
             WFCSolver sl = new WFCSolver(rb, globalWeights);
 
