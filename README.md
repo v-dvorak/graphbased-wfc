@@ -1,107 +1,165 @@
-# Graph-based wavefunction collapse
+<!-- omit in toc -->
+# Graphbased Wavefunction Collapse - User Documentation
 
-Specifikace zápočtového programu pro letní semestr 2023/24
+GBWFC is a C# library that provides algorithms to create general un/directed graphs and color them based on given rules and color frequencies.
 
-## Cíle
+Few usage examples are provided, they are a great source for learning how to use the library in practice. Deep dive into the inner workings of this library is [here (pdf)](docs/tech_docs.pdf).
 
-Cílem je implementovat WFC jako knihovnu, která dokáže obarvit libovolný orientovaný graf podle pravidel a distribucí jednotlivých barev. Tuto knihovnu lze použít například pro generování map pro roguelike hry (třeba v Unity), barvení grafů (algoritmus v nejhorším případě vyzkouší všechny možnosti, lze jím dokázat, že nějaký graf je k-obarvitelný), řešení sudoku.
+![](docs/showcase/compilation.png)
 
-### Formáty vstupů
+## Graph representation
 
-- graf zadaný jako seznam hran `A->B`, s možností interpretovat graf jako neorientovaný:
-```
-0 1
-1 2
-3 2
-...
-```
-- pravidla zadaná ve formátu JSON, příklad pro obarvení čtyřmi barvami:
+The library contains it own classes to represent a Graph and its Nodes. Method to convert graphs from `QuikGraph` is provided.
+
+Methods to save graphs to the DOT format and render them using the GraphViz library are implemented.
+
+## Rules
+
+Rules are relationships between a parent node and its children. For example we can define a rule `(0, [ 1, 2, 3 ])` - if a node has assigned color `0` then its children are allowed to be colored `1`, `2` or `3`.
+
+Rules can be loaded from a JSON by calling `RulebookParser.RulesFromJSON` method. Format example:
+
 ```json
 {
-  "0": [ "1", "2", "3" ],
-  "1": [ "0", "2", "3" ],
-  "2": [ "0", "1", "3" ],
-  "3": [ "0", "1", "2" ]
+    "0": [ "0", "1", "2", "3" ],
+    "1": [ "0" ],
+    "2": [ "0" ],
+    "3": [ "0" ]
 }
 ```
-- formát výstupu, tady si ještě nejsem úplně jistý, určitě by šlo o dvojice `vrchol, barva`
 
-### Specifikace, použití a ukázky funkčnosti
+## Solver
 
-- načtení grafu, pravidel a četností ze souboru
-- podpora zafixování některých buněk konkrétní hodnotou
-- sudoku
-- generování ve čtvercové síti
-- barvení grafu
+Recursively tries to meet all the rules and assign values to all of its nodes, returns Graph with assigned colors, if successful or `null`, if it fails.
 
-### Feautures pokročilého C#
+The main algorithm is called `RecursiveSolve2`:
 
-Priorita zpracování buněk se standardně odvíjí od jejich entropie. Uživatel může mít jiné požadavky, proto by se zde dali použít **delegáty**. Funkce by braly seznam buněk a vracely jen jednu, tu, o které si myslí, že by měla prožít kolaps jako další.
+![](docs/rs2_algorithm_screenshot.png)
 
-### Možná vylepšení
+Nodes are collapsed in order by their Entropy, by default it's [Shannon Entropy](https://en.wikipedia.org/wiki/Entropy_(information_theory)), but user specify any delegate when initializing the Solver, which is then used instead of the default one.
 
-- podpora populárních knihoven pro práci s grafy v C#
+## Constraints
 
-## Co je to WFC?
+Imagine you are given a Sudoku problem, you don’t start with an empty grid, rather with some of the values filled in - let’s call them constraints aka "the cells set before any solving takes place".
 
-WFC se nejčastěji používá v herním průmyslu pro procedurální generování obsahu jako jsou mapy, terény nebo levely ve hrách. Inspiraci si bere z kvantové mechaniky - pracuje se superpozicemi buněk a kolapsem vlnových funkcí.
+These constraints can be passed to the Solver that takes them into count.
 
-WFC začíná s několika buňkami, kde každá buňka může být v libovolném z několika možných stavů. Algoritmus postupně vybírá buňky a omezuje jejich stavy na základě pravidel sousedství, dokud nezůstane pro každou buňku jediný možný stav.
+## Example usage
 
-Pseudo algoritmus:
+### Graph Coloring
 
-1) **Inicializace**: Každá buňka je nastavena na superpozici všech možných stavů.
-2) **Kolaps**: Vybere se buňka s nejmenší entropií a její stav se zafixuje.
-3) **Propagace**: Omezení se šíří do sousedních buněk, aktualizují se jejich možné stavy na základě pravidel sousedství.
-4) **Opakování**: Proces kolapsu a propagace se opakuje, dokud nejsou všechny buňky v právě jendom stavu.
+The base Solver is used to get the coloring and then methods `CreateImage` and `ShowImage` are used to render and show the
+result.
 
-![](https://raw.githubusercontent.com/mxgmn/WaveFunctionCollapse/master/images/wfc.gif)
+![](docs/showcase/graph_coloring_r.jpg)
 
-## Znaky typické implementace WFC
+### Grid Generation
 
-Implementace WFC dostupné online se povětšinou omezují na čtvercové sítě a pravidla, která jsou symetrická. S trochou nadsázky bychom mohli říct, že standardní implementace umí řešit obarvování rovinných grafů. (Pro mě je nejlepší přemýšlet o WFC jako o obarvování grafů s pravidly navíc.)
+The wrapper for grids generates all the necessary edges which are then used to construct an undirected graph and passed to the Solver. We can define a "country gradient": water, sand, grass, dirt and rocks; and end up with a really simle and stupid Minecraft-like terrain generator.
 
-Pravidla jsou zadána jako `A-B`, to znamená, že `A` může sousedit s `B`.
+![](docs/mc_map.png)
 
-## Proč to nestačí?
+### Sudoku
 
-Za dva roky studia na matfyzu jsem přišel na to, že ne všechny problémy se dají redukovat na čtvercovou síť.
+The wrapper generates all the necessary edges for all cells and also retrieves constraints from the problem given. This information is then used to create a graph that is passed to the base Solver with retrieved constraints.
 
-### Problémy symetrie pravidel
+```
+0 0 0 5 0 9 0 0 4           8 7 3 5 2 9 1 6 4
+0 2 0 0 6 0 5 0 9           1 2 4 7 6 3 5 8 9
+0 0 9 1 4 8 0 3 0           5 6 9 1 4 8 2 3 7
+0 0 0 4 0 0 0 0 0           2 1 6 4 5 7 3 9 8
+4 0 0 0 9 0 0 0 0    ==>    4 3 5 8 9 1 7 2 6
+0 0 0 0 0 0 0 1 5           7 9 8 2 3 6 4 1 5
+0 8 0 0 0 0 9 5 0           3 8 1 6 7 4 9 5 2
+0 4 2 0 0 0 8 0 0           6 4 2 9 1 5 8 7 3
+0 0 0 0 0 0 6 4 1           9 5 7 3 8 2 6 4 1
+```
 
-Ve hře [Peglin](https://store.steampowered.com/app/1296610/Peglin/) má hráč po každé bitvě na výběr mezi dalšími dvěma možnostmi. A protože se hráč nemůže vracet, jedná se o DAG - **orientovaný** graf.
+Classes and methods to request new random boards from [sugoku.onrender.com](https://sugoku.onrender.com/) are provided.
+
+### Map Generation
+
+Inspired by the game [Peglin](https://store.steampowered.com/app/1296610/Peglin/), I created a simple map generator and came up with some rules and frequencies. The map grows from one node into maximal width and then in  collapses back into one node at the end.
+
+There are four types of levels: normal fight (black), boss fight (yellow), shop (blue), treasure (purple); with frequencies `[10, 5, 2, 2]`. The player can only progress downwards, so the graph is oriented. Also we can use pass a constraint to the Solver so that the player starts in a normal fight.
+
+The output, player would progress from left to right:
+
+![](docs/showcase/peglin_map_r.png)
+
+## Motivation
+
+### Features of a typical WFC implementation
+
+WFC implementations available online are mostly limited to square grids and rules that are symmetric. With a bit of exaggeration, we could say that the standard implementations can handle coloring planar graphs. (For me, it's best to think of WFC as coloring graphs with extra steps.)
+
+The rules are specified as `A-B`, that is, `A` can be adjacent to `B`.
+
+### Why isn't that enough?
+
+In two years of studying CS in college, I found out that not all problems can be reduced to a square grid.
+
+#### Symmetry problems of rules
+
+In the game [Peglin](https://store.steampowered.com/app/1296610/Peglin/), after each battle, the player has a choice between two other options. And since the player cannot backtrack, the map is a DAG - **oriented** graph.
 
 ![](docs/peglin_example.png)
 
-Dejme tomu, že cheme, aby hráč po každým bossovi ( :skull: ) měl možnost doplnit zásoby ( :moneybag: ). Určitě ale nechceme, aby si hráč doplnil zásoby před bossem - pravidlo není symetrické. vyjádříme ho jako :skull: `->` :moneybag:, typická WFC s tímto nepočítá, nemáme možnost zadávat nesymetrická pravidla. (Některé implementace WFC vykoukají pravidla z příkladového obrázku, taková pravidla jsou inherentně symetrická.)
+Suppose we want the player to have the option to restock ( :moneybag: ) after each boss ( :skull: ). But we certainly don't want the player to restock before the boss - the rule is not symmetric. We express it as :skull: `->` :moneybag:, typical WFC doesn't account for this, we don't have the option of specifying non-symmetric rules. (Some implementations of WFC retrieve rules out of the example image, such rules are inherently symmetric.)
 
-Složitejší konstrukce herních levelů mohou vypadat třeba takto:
+More complex game level constructions might look like this:
 
 ![](docs/map_example.png)
 
-### Problémy sousedství
+#### Neighborhood problems
 
-Grafy samozřejmě mohou být výrazně složitější, třeba s cykly. Občas je potřeba vyjádřit závislosti mezi buňkami, které spolu v síti neousedí. GBWFC lze použít na řešení sudoku, kde jsou sice pravidla symetrická, ale ne všechny na sobě závislé buňky spolu sousedí.
+Of course, graphs can be significantly more complex, for example with cycles. Sometimes you need to express dependencies between cells that are not neighbors in the square grid. GBWFC can be used to solve Sudoku, where although the rules are symmetric, not all dependent cells are adjacent to each other.
 
-Políčko má jenom čtyři sousedy v síti, ovšem podle pravidel sudoku je závislé na sloupci, řádku a 3x3 čtverečku. To bychom jen sotva obsáhli ve čtvercové síti.
+A cell has only four neighbors in the grid, but according to the sudoku rules it depends on a column, a row and a 3x3 square. We could barely contain that in a square grid.
 
 ![](docs/sudoku_neighbors.png)
 
 ![](docs/sudoku_example.png)
 
-Dalším příkladem může být obarvování mapy, super, mapa světa je přece rovinný graf, tak to je jednoduché a dokonce to zvládneme jen čtyřmi barvami! Opak je pravdou, co takové exklávy a enklávy? Třeba Kaliningrad a pevninské Rusko by měly mít na mapě stejnou barvu, přestože to jsou dvě buňky oddělené jinými buňkami. Pokud se takových problémů sejde víc, nemusíme být schopni je ohlídat.
+Another example would be coloring a map, cool, the world map is a planar graph after all, so it's easy and we can even do it with just four colors! The opposite is true, what about such exclaves and enclaves? For example, Kaliningrad and mainland Russia should have the same color on the map, even though they are two cells separated by different cells. If more such problems come together, we may not be able to keep track of them.
 
 ![](https://preview.redd.it/r5inx892fxk51.png?auto=webp&s=f2a1931ee9685e6ac3852e99453b6e79cfa98a64)
 
-> podle komentáře na [Redditu](https://www.reddit.com/r/MapPorn/comments/ilsfug/4_color_theorem_applied_to_europe/) tato mapa není úplně správně, pro ilustraci postačí
+> according to a comment on [Reddit](https://www.reddit.com/r/MapPorn/comments/ilsfug/4_color_theorem_applied_to_europe/) this map is not quite right, for illustration purposes it will suffice
 
-Z těchto úvah jasně vidíme, že nejlepší by bylo mít algoritmus, který pracuje na libovolném orientovaném grafu - jakýkoliv jiný problém na něj dokážeme převést.
+From these considerations, we can clearly see that the best would be to have an algorithm that works on an arbitrary oriented graph - any other problem we can convert to it.
 
-### Proč nepoužít klasický algoritmus na barvení grafu?
+#### Why not use the conventional graph coloring algorithm?
 
-Jednou z výhod WFC je, že si předem můžeme říct, jak často se mají jednotlivé typy buněk (barvy) vyskytovat. Například místnosti s bossy by neměly být časté, to jenom z pravidel vykoukat nejde, proto WCF na začátku předáme pravděpodobnosti/četnosti (například `normalni : 80, boss : 15, poklad : 5`). To standardní implementace obarvování neumí.
+One of the advantages of WFC is that we can specify in advance how often each cell type (color) should appear. For example, rooms with bosses shouldn't be frequent, you can't tell that just from the rules, so we pass probabilities/numbers to WCF at the beginning (e.g. `normal : 80, boss : 15, treasure : 5`). The standard implementation of coloring doesn't do that.
 
-# Zdroje
+## Dependencies
 
-- [Automatic Generation of Game Content using a Graph-based Wave Function Collapse Algorithm](https://ieeexplore.ieee.org/document/8848019)
-- [The Wavefunction Collapse Algorithm explained very clearly](https://robertheaton.com/2018/12/17/wavefunction-collapse-algorithm/)
+- DotNetGraph
+- QuickGraph
+- Refit
+- System.Drawing.Common
+
+## References
+
+1) [Automatic Generation of Game Content using a Graph-based Wave Function Collapse Algorithm](https://ieeexplore.ieee.org/document/8848019), by Hwanhee Kim, Seongtaek Lee, Hyundong Lee, Teasung Hahn, Shinjin Kang
+
+2) [The Wavefunction Collapse Algorithm explained very clearly](https://robertheaton.com/2018/12/17/wavefunction-collapse-algorithm/), by RObert Heaton
+
+## Acknowledgements
+
+1) `ContrastColor` at `DistinctColors.cs`
+   - Returns a more contrastive option for text for a given background (black or white).
+   - by [Gacek](https://stackoverflow.com/users/177167/gacek), found at [Stack Overflow](https://stackoverflow.com/questions/1855884/determine-font-color-based-on-background-color)
+
+2) Precomputed list of contrast colors at `DistinctColors.cs`
+
+   - List of 1024 precomputed contrast colors, used for contrast-enough graph coloring.
+   - by [Tatarize](https://stackoverflow.com/users/631911/tatarize), found at [Stack Overflow](https://stackoverflow.com/questions/309149/generate-distinctly-different-rgb-colors-in-graphs)
+
+3) `PrioritySet<TElement, TPriority>` with updates at `PriorityQueue.cs`
+
+   - Returns element with lowest priority, supports updates to already enqueued elements in $O(\log n)$.
+   - by [eiriktsarpalis](https://github.com/eiriktsarpalis/), proposed [here](https://github.com/dotnet/runtime/issues/44871)
+
+4) Many thanks to my friend [Matej](https://github.com/mvolfik) who helped me to debug the Solver.
