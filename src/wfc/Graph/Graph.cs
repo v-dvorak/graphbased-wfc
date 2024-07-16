@@ -7,11 +7,14 @@
         public int TotalOptions;
         private int totalAssigned = 0;
         public bool AllSet { get => AllNodes.Length <= totalAssigned; }
+        private readonly GraphDirectedness directedness;
+        public bool IsDirected { get => directedness == GraphDirectedness.Directed; }
         public WFCGraph(Node[] nodes, int totalOptions = -1)
         {
             AllNodes = nodes;
             TotalOptions = totalOptions;
             totalAssigned = 0;
+            directedness = GraphDirectedness.Directed;
             if (totalOptions != -1)
             {
                 InitializeNodeOptions(totalOptions);
@@ -21,6 +24,7 @@
         {
             TotalOptions = options;
             totalAssigned = 0;
+            directedness = direct;
             // Determine unique node IDs from edges
             HashSet<int> nodeIds = new HashSet<int>();
             foreach (var edge in edges)
@@ -229,7 +233,7 @@
 
             return edges;
         }
-        
+
         public List<Edge> GetEdges()
         {
             List<Edge> edges = new();
