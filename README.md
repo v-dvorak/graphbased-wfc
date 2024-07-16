@@ -30,13 +30,13 @@ Rules can be loaded from a JSON by calling `RulebookParser.RulesFromJSON` method
 
 ## Solver
 
-Recursively tries to meet all the rules and assign values to all of its nodes, returns Graph with assigned colors, if successful or `null`, if it fails.
+Recursively tries to meet all the rules and assign values to all of graph's nodes, returns graph with assigned colors, if successful, or `null`, if it fails.
 
 The main algorithm is called `RecursiveSolve2`:
 
 ![](docs/rs2_algorithm_screenshot.png)
 
-Nodes are collapsed in order by their Entropy, by default it's [Shannon Entropy](https://en.wikipedia.org/wiki/Entropy_(information_theory)), but user specify any delegate when initializing the Solver, which is then used instead of the default one.
+Nodes are collapsed in order by their Entropy, by default it's [Shannon Entropy](https://en.wikipedia.org/wiki/Entropy_(information_theory)), but user may specify any delegate when initializing the Solver, which is then used instead of the default one.
 
 ## Constraints
 
@@ -79,9 +79,9 @@ Classes and methods to request new random boards from [sugoku.onrender.com](http
 
 ### Map Generation
 
-Inspired by the game [Peglin](https://store.steampowered.com/app/1296610/Peglin/), I created a simple map generator and came up with some rules and frequencies. The map grows from one node into maximal width and then in  collapses back into one node at the end.
+Inspired by the game [Peglin](https://store.steampowered.com/app/1296610/Peglin/), I created a simple map generator and came up with some rules and frequencies. The map grows from one node into maximal width and then it collapses back into one node at the end.
 
-There are four types of levels: normal fight (black), boss fight (yellow), shop (blue), treasure (purple); with frequencies `[10, 5, 2, 2]`. The player can only progress downwards, so the graph is oriented. Also we can use pass a constraint to the Solver so that the player starts in a normal fight.
+There are four types of levels: normal fight (black), boss fight (yellow), shop (blue), treasure (purple); with frequencies `[10, 5, 2, 2]`. The player can only progress downwards, so the graph is oriented. Also we can pass a constraint to the Solver so that the player starts in a normal fight.
 
 The output, player would progress from left to right:
 
