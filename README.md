@@ -1,5 +1,5 @@
 <!-- omit in toc -->
-# Graphbased Wavefunction Collapse - User Documentation
+# Graphbased Wavefunction Collapse
 
 GBWFC is a C# library that provides algorithms to create general un/directed graphs and color them based on given rules and color frequencies.
 
