@@ -17,11 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetGraph" Version="3.1.0" />
-    <PackageReference Include="Graphviz" Version="2.38.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="DotNetGraph" Version="3.2.0" />
     <PackageReference Include="QuikGraph" Version="2.5.0" />
     <PackageReference Include="Refit" Version="7.1.2" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
