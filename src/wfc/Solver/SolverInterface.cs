@@ -9,8 +9,8 @@
         /// <summary>
         /// Solves given example using GBWFC and returns result in the same format.
         /// </summary>
-        /// <param name="example"></param>
+        /// <param name="problem"></param>
         /// <returns></returns>
-        public T? Solve(T example);
+        public T? Solve(T problem);
     }
 }
