@@ -1,7 +1,3 @@
----
-geometry: margin=3cm
----
-
 <!-- omit in toc -->
 # Graphbased Wavefunction Collapse
 
