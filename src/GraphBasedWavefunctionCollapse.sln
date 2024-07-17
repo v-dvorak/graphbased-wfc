@@ -7,13 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GBWFC", "wfc\GBWFC.csproj",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WFCTests", "WFCTests\WFCTests.csproj", "{5644A779-8D73-4BD8-A156-1B08B07C83C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SudokuShowcase", "SudokuShowcase\SudokuShowcase.csproj", "{B4D82722-AC53-4B90-9A1B-9EE708D5C5FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuShowcase", "SudokuShowcase\SudokuShowcase.csproj", "{B4D82722-AC53-4B90-9A1B-9EE708D5C5FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GridShowcase", "GridShowcase\GridShowcase.csproj", "{3B1680DD-EA37-4664-B5E7-3754EA4D2931}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GridShowcase", "GridShowcase\GridShowcase.csproj", "{3B1680DD-EA37-4664-B5E7-3754EA4D2931}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphColoringShowcase", "GraphColoringShowcase\GraphColoringShowcase.csproj", "{53E50F35-11F2-43A1-A1B6-670598FCA5D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphColoringShowcase", "GraphColoringShowcase\GraphColoringShowcase.csproj", "{53E50F35-11F2-43A1-A1B6-670598FCA5D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapShowcase", "MapShowcase\MapShowcase.csproj", "{4A3AB511-0CC2-4460-9DA6-9F8894619880}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapShowcase", "MapShowcase\MapShowcase.csproj", "{4A3AB511-0CC2-4460-9DA6-9F8894619880}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UsageExamples", "UsageExamples", "{6D89ECDE-543C-4AEF-B998-2A68EEFC95BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B4D82722-AC53-4B90-9A1B-9EE708D5C5FF} = {6D89ECDE-543C-4AEF-B998-2A68EEFC95BF}
+		{3B1680DD-EA37-4664-B5E7-3754EA4D2931} = {6D89ECDE-543C-4AEF-B998-2A68EEFC95BF}
+		{53E50F35-11F2-43A1-A1B6-670598FCA5D2} = {6D89ECDE-543C-4AEF-B998-2A68EEFC95BF}
+		{4A3AB511-0CC2-4460-9DA6-9F8894619880} = {6D89ECDE-543C-4AEF-B998-2A68EEFC95BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5A07ECAA-4184-43BE-B0AA-DE61337071D2}
