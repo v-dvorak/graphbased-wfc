@@ -61,7 +61,7 @@ It takes some (precious) time to convert between the two graphs. Constructing `W
 
 # Rulebook
 
-Rulebook is a collection of rules that, when asked by a type returns a single `Rule`. It has two arrays of rules, one for the relationships between a parent and children (that is passed to a constructor by the user) and one for the relationships between a child and parents (that is created automatically during initialization).
+Rulebook is a collection of rules that, when queried by a node type (color) returns a single `Rule`. It has two arrays of rules, one for the relationships between a parent and children (that is passed to a constructor by the user) and one for the relationships between a child and parents (that is created automatically during initialization).
 
 This way, when assigning a value $M$ to a node $K$, we can easily retrieve rule for children using `rulesForChildren[`$M$`]` and rule for parents using `rulesForParents[`$M$`]`, and update options of $K$'s neighbors accordingly.
 
@@ -69,19 +69,21 @@ This way, when assigning a value $M$ to a node $K$, we can easily retrieve rule 
 
 `Rule` is a description of a relationship between a parent node and its children represented by a struct with two fields: Item and Options. Item is the value assigned to parent and Options are all allowed values for its children.
 
-In the set of rules in \ref{rules}, there are for types of nodes `A`, `B`, `C` and `D`. `A` can have any type as its children and `B`, `C`, `D` can have only `A` as their parent. Note that by default rules are oriented (parents on the left, children on the right).
+In this example set of rules in \ref{rules}, there are four types (colors) of nodes `A`, `B`, `C` and `D`. `A` can have any type as its children, `B` and `D` can have only `A` as their child, and `C` must have `D` as a child.
+
+Here we can see the strength of oriented rules: after every `C` there has to be `D` and it can't be the other way around. Maybe we want the player to go through level `D` only after he passes level `C`. See \ref{map} for an example of an oriented graph colored like this.
 
 ![Example of rules, <https://ieeexplore.ieee.org/document/8848019>\label{rules}](rules.png){ width=50% }
 
 ## Loading rules from a file
 
-The rules from above can be represented as a JSON and the parsed calling `RulebookParser.RulesFromJSON`, it uses the `System.Text.Json` library.
+The rules from \ref{rules} can be represented as a JSON and retrieved by calling `RulebookParser.RulesFromJSON`, it uses the `System.Text.Json` library.
 
 ```json
 {
   "0": [ "0", "1", "2", "3" ],
   "1": [ "0" ],
-  "2": [ "0" ],
+  "2": [ "3" ],
   "3": [ "0" ]
 }
 ```
@@ -149,7 +151,7 @@ entropy $\leftarrow$ 0\;
 
 ## PrioritySet
 
-For quick enqueueing and dequeueing of nodes to process the algorithm uses a `PrioritySet` implemented by [eiriktsarpalis](https://github.com/eiriktsarpalis), [here](https://github.com/eiriktsarpalis/pq-tests/blob/master/PriorityQueue/PrioritySet.cs). The structure allows updates priority of nodes in $O(\log N)$ and does not allow duplicates.
+For quick enqueueing and dequeueing of nodes to process the algorithm uses a `PrioritySet` implemented by [eiriktsarpalis](https://github.com/eiriktsarpalis), [here](https://github.com/eiriktsarpalis/pq-tests/blob/master/PriorityQueue/PrioritySet.cs). The structure allows updates to the priority of nodes in $O(\log N)$ and does not allow duplicates.
 
 Working with it is similar to C#'s basic PriorityQueue, the ability to update already enqueued elements is the only difference.
 
@@ -302,23 +304,23 @@ The Sudoku board is represented as `int[9,9]`, for example:
 
 When creating a roguelike game one needs to not only generates the levels themselves but also the map which includes the levels. The rules may be strict and in the worse case the graph may include cycles.
 
-Inspired by the game [Peglin](https://store.steampowered.com/app/1296610/Peglin/), I created a simple map generator and came up with some rules and frequencies. The map grows from one node into maximal width and then in collapses back into one node at the end (maps in the game can be much more complicated, but after all, this project is about coloring these maps, not creating them`:)`).
+Inspired by the game [Peglin](https://store.steampowered.com/app/1296610/Peglin/), I created a simple map generator and came up with some rules and frequencies. The map grows from one node into maximal width and then it collapses back into one node at the end (maps in the game can be much more complicated, but after all, this project is about coloring these maps, not creating them`:)`).
 
 ![Peglin map example, <https://store.steampowered.com/app/1296610/Peglin/>](https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1296610/ss_ac8f1e46cf60585360ff4f0fc9bd5044c9fd1b59.1920x1080.jpg){ width=50% }
 
-There are four types of levels: normal fight (black), boss fight (yellow), shop (blue), treasure (purple); with frequencies `[10, 5, 2, 2]`. The player can only progress downwards, so the graph is oriented. Also we can use pass a constraint to the Solver so that the player starts in a normal fight.
+There are four types of levels: normal fight (gray), treasure (red), boss fight (yellow), shop (blue); with frequencies `[10, 5, 5, 5]`. The player can only progress downwards, so the graph is oriented. Also we can pass a constraint to the Solver so that the player starts in a normal fight.
 The rules are same as in \ref{rules}:
 
 ```json
 {
   "0": [ "0", "1", "2", "3" ],  // normal fight
-  "1": [ "0" ],                 // boss fight
-  "2": [ "0" ],                 // shop
-  "3": [ "0" ]                  // treasure
+  "1": [ "0" ],                 // treasure
+  "2": [ "3" ],                 // boss fight
+  "3": [ "0" ]                  // shop
 }
 ```
 
-![One of the possible results, the player would progress from left to right](showcase/peglin_map_r.png){ width=100% }
+![One of the possible results, the player would progress from left to right\label{map}](map_r.png){ width=100% }
 
 \newpage
 

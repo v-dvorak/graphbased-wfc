@@ -1,3 +1,7 @@
+---
+geometry: margin=3cm
+---
+
 <!-- omit in toc -->
 # Graphbased Wavefunction Collapse
 
@@ -23,10 +27,14 @@ Rules can be loaded from a JSON by calling `RulebookParser.RulesFromJSON` method
 {
     "0": [ "0", "1", "2", "3" ],
     "1": [ "0" ],
-    "2": [ "0" ],
+    "2": [ "3" ],
     "3": [ "0" ]
 }
 ```
+
+Graphical representation of rules above:
+
+![](docs/rules.png)
 
 ## Solver
 
@@ -81,11 +89,15 @@ Classes and methods to request new random boards from [sugoku.onrender.com](http
 
 Inspired by the game [Peglin](https://store.steampowered.com/app/1296610/Peglin/), I created a simple map generator and came up with some rules and frequencies. The map grows from one node into maximal width and then it collapses back into one node at the end.
 
-There are four types of levels: normal fight (black), boss fight (yellow), shop (blue), treasure (purple); with frequencies `[10, 5, 2, 2]`. The player can only progress downwards, so the graph is oriented. Also we can pass a constraint to the Solver so that the player starts in a normal fight.
+There are four types of levels: normal fight (gray), treasure (red), boss fight (yellow), shop (blue); with frequencies `[10, 5, 5, 5]`. The player can only progress downwards, so the graph is oriented. Also we can pass a constraint to the Solver so that the player starts in a normal fight.
 
 The output, player would progress from left to right:
 
-![](docs/showcase/peglin_map_r.png)
+![](docs/map_r.png)
+
+The rules; notice that after every boss fight (yellow) there's a shop (blue):
+
+![](docs/rules.png)
 
 ## Motivation
 
