@@ -1,4 +1,5 @@
-﻿using DotNetGraph.Compilation;
+﻿using Colors;
+using DotNetGraph.Compilation;
 using DotNetGraph.Core;
 using DotNetGraph.Extensions;
 using GBWFC.Graph;
@@ -75,13 +76,18 @@ namespace GBWFC.Modules
         /// </summary>
         /// <param name="graph"></param>
         public static void CreateImage(
-            Graph.WFCGraph graph,
+            WFCGraph graph,
             string outputImagePath,
             string graphVizLibraryPath,
+            string[] colors = null,
             GraphVizEngine engine = GraphVizEngine.dot
             )
         {
-            var dotGraph = ConvertGraphToDotGraph(graph, colors: Colors.DistinctColors.Colors, nodeConfig: node => node
+            if (colors is null)
+            {
+                colors = DistinctColors.Colors;
+            }
+            var dotGraph = ConvertGraphToDotGraph(graph, colors: colors, nodeConfig: node => node
                 .WithShape(DotNodeShape.Circle)
                 .WithStyle(DotNodeStyle.Bold)
                 .WithStyle(DotNodeStyle.Filled)
