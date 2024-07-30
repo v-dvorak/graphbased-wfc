@@ -19,7 +19,7 @@ namespace GraphColoringShowcase
                 string outputName = "temp.png";
                 string graphVizPath = "F:/graphviz/bin";
                 Console.WriteLine("Success!");
-                GraphModule.CreateImage(solved, outputName, graphVizPath, GraphModule.GraphVizEngine.fdp);
+                GraphModule.CreateImage(solved, outputName, graphVizPath, engine: GraphModule.GraphVizEngine.fdp);
                 GraphModule.OpenImage(outputName);
             }
         }
