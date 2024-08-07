@@ -148,6 +148,20 @@ One of the advantages of WFC is that we can specify in advance how often each ce
 - Refit
 - System.Drawing.Common
 
+## Limitations
+
+### Stack overflow
+
+By nature, this algorithm is recursive and requires a lot of memory and resources to remember graph's state in case of backtracking. Unlike gridbased WFC, graphbased WFC may have more complex rules and structures to color and thus it needs to backtrack a lot more (sometimes gridbased WFC does not backtrack at all). So, yeah, stack overflow is a natural enemy of this kind of algorithm.
+
+Personally, I have experienced crashes when working with around 2500 nodes - that's a 50x50 grid (another example why using dedicated gridbased WFC is better). On the other hand, imagine a map with 2500 rooms/levels, that's a big map. While playing a lot of roquelike game never have I encountered a map with more then hundred of rooms/levels.
+
+### Slow conversion from QuikGraph library
+
+Even though conversion method QuikGraph -> GBWFC Graph is provided, I would not recommend using is, it is very generalized and therefore very slow. It is best to initialize the Graph from list of edges or to implement your own method for converting between the two libraries.
+
+QuikGraph has a great documentation so figuring out the fastest conversion algorithm for each graph class should not be that difficult, but, unfortunately, this is outside the scope of this project.
+
 ## References
 
 1) [Automatic Generation of Game Content using a Graph-based Wave Function Collapse Algorithm](https://ieeexplore.ieee.org/document/8848019), by Hwanhee Kim, Seongtaek Lee, Hyundong Lee, Teasung Hahn, Shinjin Kang
